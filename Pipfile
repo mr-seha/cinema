@@ -1,0 +1,35 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+djangorestframework = "*"
+pillow = "*"
+django-cors-headers = "*"
+django-filter = "*"
+drf-spectacular = "*"
+drf-nested-routers = "*"
+djangorestframework-simplejwt = "*"
+django-jalali-date = "*"
+redis = "*"
+celery = "*"
+flower = "*"
+gunicorn = "*"
+
+[dev-packages]
+django-stubs = "*" #Only for fixing: pycharm not recognizing .objecs in models
+disutils = "*"
+setuptools = "*"
+django-debug-toolbar = "*"
+locust = "*"
+django-silk = "*"
+pytest = "*"
+pytest-django = "*"
+pytest-watch = "*"
+model-bakery = "*"
+
+
+[requires]
+python_version = "3.11"
