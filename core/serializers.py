@@ -21,9 +21,21 @@ class UserBriefSerializer(serializers.ModelSerializer):
 
         read_only_fields = ['last_login']
 
-    password = serializers.CharField(max_length=255, write_only=True,
-                                     style={'input_type': 'password'}, validators=[password_validator])
+    password = serializers.CharField(max_length=255,
+                                     write_only=True,
+                                     allow_blank=True,
+                                     help_text="برای عدم تغییر پسورد فیلد را خالی بگذارید.",
+                                     style={'input_type': 'password'},
+                                     validators=[password_validator]
+                                     )
 
-    def save(self, **kwargs):
-        self.validated_data['password'] = make_password(self.validated_data['password'])
-        super().save()
+    def update(self, instance, validated_data):
+        password = validated_data.pop("password", None)
+
+        user = super().update(instance, validated_data)
+
+        if password:
+            user.set_password(password)
+            user.save()
+
+        return user
