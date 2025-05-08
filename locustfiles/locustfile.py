@@ -9,18 +9,18 @@ class WebSiteUser(HttpUser):
     @task(4)
     def view_films(self):
         genre_id = randint(1, 4)
-        self.client.get(f"/films/?genre_id={genre_id}/", name="/films")
+        self.client.get(f"/api/films/?genre_id={genre_id}/", name="/films")
 
     @task(9)
     def view_film(self):
         film_id = [1, 2, 6][randint(0, 2)]
-        self.client.get(f"/films/{film_id}/", name="/films/id")
+        self.client.get(f"/api/films/{film_id}/", name="/films/id")
 
     @task(1)
     def view_genres(self):
-        self.client.get("/genres/", name="/genres")
+        self.client.get("/api/genres/", name="/genres")
 
     @task
     def browse_film_comments(self):
         film_id = randint(1, 5)
-        self.client.get(f"/films/{film_id}/comments/")
+        self.client.get(f"/api/films/{film_id}/comments/")

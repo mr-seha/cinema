@@ -4,7 +4,7 @@ from rest_framework import status
 
 from movie.models import Collection
 
-COLLECTIONS_URL = "/collections/"
+COLLECTIONS_URL = "/api/collections/"
 
 
 @pytest.fixture
