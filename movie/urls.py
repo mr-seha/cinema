@@ -17,7 +17,7 @@ films_router.register(r'comments', views.CommentNestedViewSet, basename='film-co
 films_router.register(r'links', views.LinkNestedViewSet, basename='film-links')
 
 urlpatterns = [
-                  path('collections/', views.collections_list),
+                  path('collections/', views.collection_list),
                   path('collections/<id>/', views.CollectionDetail.as_view()),
                   path('links/', views.LinkList.as_view()),
                   path('links/<id>/', views.LinkDetail.as_view()),

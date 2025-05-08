@@ -13,25 +13,23 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from .filters import CommentFilter, FilmFilter, LinkFilter
 from .models import Actor, Collection, Comment, Film, Link, Director, Country, Genre
 from .permissions import IsAdminOrReadOnly, IsAdminOrAuthenticatedOrReadOnly
-from .serializers import ActorSerializer, CollectionSerializer, CommentSerializer, FilmSerializer, LinkSerializer, \
-    CommentNestedSerializer, LinkNestedSerializer, FilmSavingSerializer, DirectorSerializer, CountrySerializer, \
-    GenreSerializer
+from . import serializers
 
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAdminOrReadOnly])
-def collections_list(request):
+def collection_list(request):
     if request.method == "GET":
         queryset = Collection.objects.all()
         search_param = request.query_params.get("search")
         if search_param:
             queryset = queryset.filter(title__istartswith=search_param)
 
-        serializer = CollectionSerializer(queryset, many=True)
+        serializer = serializers.CollectionSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == "POST":
-        serializer = CollectionSerializer(data=request.data)
+        serializer = serializers.CollectionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -42,12 +40,12 @@ class CollectionDetail(APIView):
 
     def get(self, request, id):
         collection = get_object_or_404(Collection, id=id)
-        serializer = CollectionSerializer(collection)
+        serializer = serializers.CollectionSerializer(collection)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, id):
         collection = get_object_or_404(Collection, id=id)
-        serializer = CollectionSerializer(collection, data=request.data)
+        serializer = serializers.CollectionSerializer(collection, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_200_OK)
@@ -68,8 +66,8 @@ class FilmViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
-            return FilmSerializer
-        return FilmSavingSerializer
+            return serializers.FilmSerializer
+        return serializers.FilmSavingSerializer
 
     def get_queryset(self):
         queryset = Film.objects.select_related("director") \
@@ -84,7 +82,7 @@ class FilmViewSet(ModelViewSet):
 
 class LinkList(ListCreateAPIView):
     queryset = Link.objects.all()
-    serializer_class = LinkSerializer
+    serializer_class = serializers.LinkSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = LinkFilter
     ordering_fields = ["created_date", "size"]
@@ -93,20 +91,20 @@ class LinkList(ListCreateAPIView):
 
 class LinkDetail(RetrieveUpdateDestroyAPIView):
     queryset = Link.objects.all()
-    serializer_class = LinkSerializer
+    serializer_class = serializers.LinkSerializer
     lookup_field = "id"
     permission_classes = [IsAdminUser]
 
 
 class LinkNestedViewSet(ReadOnlyModelViewSet):
-    serializer_class = LinkNestedSerializer
+    serializer_class = serializers.LinkNestedSerializer
 
     def get_queryset(self):
         return Link.objects.filter(film_id=self.kwargs["film_pk"])
 
 
 class CommentViewSet(ModelViewSet):
-    serializer_class = CommentSerializer
+    serializer_class = serializers.CommentSerializer
     queryset = Comment.objects.annotate(
         like=ExpressionWrapper(
             F("like_count") - F("dislike_count"),
@@ -124,7 +122,7 @@ class CommentViewSet(ModelViewSet):
 
 
 class CommentNestedViewSet(ModelViewSet):
-    serializer_class = CommentNestedSerializer
+    serializer_class = serializers.CommentNestedSerializer
     filter_backends = [OrderingFilter, ]
     ordering_fields = ["created_date", "like"]
     permission_classes = [IsAdminOrAuthenticatedOrReadOnly]
@@ -157,7 +155,7 @@ class CommentNestedViewSet(ModelViewSet):
 
 class DirectorViewSet(ModelViewSet):
     queryset = Director.objects.all()
-    serializer_class = DirectorSerializer
+    serializer_class = serializers.DirectorSerializer
     filter_backends = [SearchFilter]
     search_fields = ["full_name", "full_name_en"]
     permission_classes = [IsAdminOrReadOnly]
@@ -165,7 +163,7 @@ class DirectorViewSet(ModelViewSet):
 
 class ActorViewSet(ModelViewSet):
     queryset = Actor.objects.all()
-    serializer_class = ActorSerializer
+    serializer_class = serializers.ActorSerializer
     filter_backends = [SearchFilter]
     search_fields = ["full_name", "full_name_en"]
     permission_classes = [IsAdminOrReadOnly]
@@ -173,7 +171,7 @@ class ActorViewSet(ModelViewSet):
 
 class CountryViewSet(ModelViewSet):
     queryset = Country.objects.all()
-    serializer_class = CountrySerializer
+    serializer_class = serializers.CountrySerializer
     filter_backends = [SearchFilter]
     search_fields = ["title"]
     permission_classes = [IsAdminOrReadOnly]
@@ -181,7 +179,7 @@ class CountryViewSet(ModelViewSet):
 
 class GenreViewSet(ModelViewSet):
     queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
+    serializer_class = serializers.GenreSerializer
     filter_backends = [SearchFilter]
     search_fields = ["title"]
     permission_classes = [IsAdminOrReadOnly]
