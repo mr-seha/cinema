@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.db.models import Count
 from django.urls import reverse
@@ -40,7 +41,6 @@ class IMDBRatingFilter(admin.SimpleListFilter):
 class LinkSizeFilter(admin.SimpleListFilter):
     title = "اندازه"
     parameter_name = "size"
-    list_per_page = 6
 
     def lookups(self, request, model_admin):
         return [("0_0.5", "کمتر از ۵۰۰ مگ"),
@@ -76,7 +76,7 @@ class FilmAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
     inlines = [LinkInline]
     actions = ["make_published"]
     list_select_related = ["user"]
-    list_per_page = 6
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     @admin.display(description="تاریخ افزودن", ordering="created_date")
     def created_date_jalali(self, film: Film):
@@ -110,7 +110,7 @@ class FilmAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
 class ActorAdmin(admin.ModelAdmin):
     list_display = ["full_name", "full_name_en", "films_count"]
     search_fields = ["full_name", "full_name_en"]
-    list_per_page = 6
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     @admin.display(description="تعداد فیلم ها")
     def films_count(self, actor: Actor):
@@ -129,6 +129,7 @@ class ActorAdmin(admin.ModelAdmin):
 class DirectorAdmin(admin.ModelAdmin):
     list_display = ["full_name", "full_name_en", "films_count"]
     search_fields = ["full_name", "full_name_en"]
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     @admin.display(description="تعداد فیلم ها")
     def films_count(self, director: Director):
@@ -147,7 +148,7 @@ class DirectorAdmin(admin.ModelAdmin):
 class CollectionAdmin(admin.ModelAdmin):
     list_display = ["title", "count_of_films"]
     search_fields = ["title__istartswith"]
-    list_per_page = 6
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(count_of_films=Count("films"))
@@ -165,6 +166,7 @@ class CollectionAdmin(admin.ModelAdmin):
 class GenreAdmin(admin.ModelAdmin):
     list_display = ["title", "films_count"]
     search_fields = ["title__istartswith"]
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     @admin.display(description="تعداد فیلم ها")
     def films_count(self, genre: Genre):
@@ -186,7 +188,7 @@ class LinkAdmin(admin.ModelAdmin):
     autocomplete_fields = ["film"]
     list_filter = ["subtitle", "language", "quality", "created_date", LinkSizeFilter]
     list_select_related = ["film"]
-    list_per_page = 6
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     @admin.display(description="عنوان", ordering="film")
     def title(self, link: Link):
@@ -220,7 +222,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ["status", "created_date", "rating"]
     list_select_related = ["user", "film"]
     actions = ["make_approved", "make_rejected"]
-    list_per_page = 6
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     @admin.display(description="کاربر", ordering="user")
     def get_user(self, comment: Comment):
@@ -255,6 +257,7 @@ class CommentAdmin(admin.ModelAdmin):
 class CountryAdmin(admin.ModelAdmin):
     list_display = ["title", "films_count"]
     search_fields = ["title__istartswith"]
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     @admin.display(description="تعداد فیلم ها")
     def films_count(self, country: Country):

@@ -151,3 +151,5 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(day_of_week='1')
     }
 }
+
+ADMIN_LIST_PER_PAGE = 5
