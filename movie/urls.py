@@ -4,6 +4,7 @@ from rest_framework_nested import routers
 from . import views
 
 router = routers.DefaultRouter()
+app_name = "movie"
 
 router.register('comments', views.CommentViewSet)
 router.register('actors', views.ActorViewSet)
