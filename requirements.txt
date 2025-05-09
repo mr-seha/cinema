@@ -18,3 +18,4 @@ pytest-django==4.11.1
 pytest-watch==4.2.0
 pytest==8.3.5
 redis==6.0.0
+django-solo==2.4.0

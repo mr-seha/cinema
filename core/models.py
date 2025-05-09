@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from solo.models import SingletonModel
 
 
 class User(AbstractUser):
@@ -18,3 +19,13 @@ class User(AbstractUser):
         if not display_name:
             display_name += self.username
         return display_name
+
+
+class SiteConfiguration(SingletonModel):
+    site_title = models.CharField(max_length=255, default='دانلود فیلم', verbose_name="عنوان سایت")
+
+    def __str__(self):
+        return "تنظیمات سایت"
+
+    class Meta:
+        verbose_name = "تنظیمات سایت"

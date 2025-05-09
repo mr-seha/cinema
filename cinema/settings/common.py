@@ -22,9 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 
-
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,9 +36,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'jalali_date',
+    'solo',
+    'drf_spectacular',
     'movie.apps.MovieConfig',
     'core.apps.CoreConfig',
-    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -76,8 +74,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'cinema.wsgi.application'
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -127,7 +123,6 @@ INTERNAL_IPS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 
@@ -145,7 +140,6 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.1',
     'SERVE_INCLUDE_SCHEMA': False,
 }
-
 
 locale.setlocale(locale.LC_ALL, "fa_IR.UTF-8")
 

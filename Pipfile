@@ -17,6 +17,7 @@ redis = "*"
 celery = "*"
 flower = "*"
 gunicorn = "*"
+django-solo = "*"
 
 [dev-packages]
 django-stubs = "*" #Only for fixing: pycharm not recognizing .objecs in models
@@ -29,7 +30,6 @@ pytest = "*"
 pytest-django = "*"
 pytest-watch = "*"
 model-bakery = "*"
-
 
 [requires]
 python_version = "3.11"
