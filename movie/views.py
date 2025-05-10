@@ -1,6 +1,7 @@
 from django.db.models import ExpressionWrapper, F, IntegerField, Q
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from django_visit_count.utils import is_new_visit
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -10,10 +11,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from . import serializers
 from .filters import CommentFilter, FilmFilter, LinkFilter
 from .models import Actor, Collection, Comment, Film, Link, Director, Country, Genre
 from .permissions import IsAdminOrReadOnly, IsAdminOrAuthenticatedOrReadOnly
-from . import serializers
 
 
 @api_view(["GET", "POST"])
@@ -63,6 +64,15 @@ class FilmViewSet(ModelViewSet):
     ordering = ["-last_update_date"]
     search_fields = ["title", "title_en"]
     permission_classes = [IsAdminOrReadOnly]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if is_new_visit(request, instance):
+            instance.visit_count = F("visit_count") + 1
+            instance.save(update_fields=["visit_count"])
+
+        return super().retrieve(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:

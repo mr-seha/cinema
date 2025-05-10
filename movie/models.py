@@ -141,7 +141,14 @@ class Film(models.Model):
         blank=True, verbose_name="دسته بندی ها"
     )
 
-    genres = models.ManyToManyField(Genre, related_name="films", blank=False, verbose_name="ژانر ها")
+    genres = models.ManyToManyField(
+        Genre,
+        related_name="films",
+        blank=False,
+        verbose_name="ژانر ها"
+    )
+
+    visit_count = models.PositiveIntegerField(default=0, verbose_name="تعداد بازدید")
 
     def __str__(self):
         return f"{self.title}({self.year})"

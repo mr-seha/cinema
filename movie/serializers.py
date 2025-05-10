@@ -87,7 +87,7 @@ class FilmSerializer(serializers.ModelSerializer):
         model = Film
         fields = ['id', 'title', 'title_en', 'thumbnail', 'year', 'description', 'is_serial',
                   'duration', 'imdb_rating', 'imdb_link', 'status', 'user', 'created_date',
-                  'last_update_date', 'director', 'genres', 'collections', 'actors', 'countries']
+                  'last_update_date', 'visit_count', 'director', 'genres', 'collections', 'actors', 'countries']
 
 
 class FilmSavingSerializer(serializers.ModelSerializer):

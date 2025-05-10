@@ -18,6 +18,7 @@ celery = "*"
 flower = "*"
 gunicorn = "*"
 django-solo = "*"
+django-visit-count = "*"
 
 [dev-packages]
 django-stubs = "*" #Only for fixing: pycharm not recognizing .objecs in models
