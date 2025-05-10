@@ -60,7 +60,7 @@ class CollectionDetail(APIView):
 class FilmViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = FilmFilter
-    ordering_fields = ["created_date", "last_update_date", "imdb_rating"]
+    ordering_fields = ["created_date", "last_update_date", "imdb_rating", "visit_count"]
     ordering = ["-last_update_date"]
     search_fields = ["title", "title_en"]
     permission_classes = [IsAdminOrReadOnly]

@@ -65,11 +65,11 @@ class LinkSizeFilter(admin.SimpleListFilter):
 @admin.register(Film)
 class FilmAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
     list_display = [
-        "title", "year", "is_serial", "duration_minutes", "imdb_rating_link", "status",
+        "title", "year", "is_serial", "duration_minutes", "visit_count", "imdb_rating_link", "status",
         "created_date_jalali",
         "get_user"]
     list_editable = ["status"]
-    readonly_fields = ["user"]
+    readonly_fields = ["user", "visit_count"]
     search_fields = ["title", "title_en"]
     list_filter = ["status", "is_serial", "genres", IMDBRatingFilter, "created_date", "collections", "countries"]
     autocomplete_fields = ["collections", "director", "actors", "countries"]
