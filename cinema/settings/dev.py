@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from .common import *
 
 DEBUG = True

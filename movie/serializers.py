@@ -39,6 +39,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['id', 'user', 'text', 'rating', 'like_count',
                   'dislike_count', 'status', 'created_date', 'film']
+
         read_only_fields = ['user', 'like_count', 'dislike_count']
 
     def create(self, validated_data):
@@ -50,6 +51,7 @@ class CommentNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'user', 'text', 'rating', 'like_count', 'dislike_count', 'status', 'created_date']
+
         read_only_fields = ['status', 'like_count', 'dislike_count', 'user']
 
     def create(self, validated_data):
@@ -87,7 +89,8 @@ class FilmSerializer(serializers.ModelSerializer):
         model = Film
         fields = ['id', 'title', 'title_en', 'thumbnail', 'year', 'description', 'is_serial',
                   'duration', 'imdb_rating', 'imdb_link', 'status', 'user', 'created_date',
-                  'last_update_date', 'visit_count', 'director', 'genres', 'collections', 'actors', 'countries']
+                  'last_update_date', 'visit_count', 'director', 'genres', 'collections',
+                  'actors', 'countries']
 
 
 class FilmSavingSerializer(serializers.ModelSerializer):
@@ -104,8 +107,6 @@ class FilmSavingSerializer(serializers.ModelSerializer):
 
     countries = serializers.PrimaryKeyRelatedField(
         queryset=Country.objects.all(), many=True, label="کشور ها")
-
-    title = serializers.CharField()
 
     class Meta:
         model = Film

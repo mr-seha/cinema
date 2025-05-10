@@ -46,8 +46,12 @@ class Director(models.Model):
 class Actor(models.Model):
     full_name = models.CharField(max_length=255, verbose_name="نام و نام خانوادگی")
     full_name_en = models.CharField(max_length=255, verbose_name="نام و نام خانوادگی انگلیسی")
-    picture = models.ImageField(upload_to="movie/images",
-                                null=True, blank=True, verbose_name="تصویر")
+    picture = models.ImageField(
+        upload_to="movie/images",
+        null=True,
+        blank=True,
+        verbose_name="تصویر"
+    )
 
     def __str__(self):
         return self.full_name
@@ -89,13 +93,13 @@ class Film(models.Model):
         validators=[film_thumbnail_size_validator],
         null=True,
         blank=True,
-        verbose_name="تصویر",
+        verbose_name="تصویر"
     )
     status = models.CharField(
         max_length=1,
         choices=STATUS_CHOICES,
         default=STATUS_PUBLISHED,
-        verbose_name="وضعیت انتشار",
+        verbose_name="وضعیت انتشار"
     )
     imdb_rating = models.FloatField(
         validators=[MinValueValidator(0), MaxValueValidator(10)],
@@ -103,18 +107,17 @@ class Film(models.Model):
     )
     imdb_link = models.URLField(max_length=255, verbose_name="لینک imdb")
 
-    countries = models.ManyToManyField(Country, related_name="films", blank=False, verbose_name="کشور ها")
-
-    duration = models.PositiveSmallIntegerField(
-        null=True, blank=True, verbose_name="مدت(دقیقه)"
-    )
-    created_date = models.DateTimeField(
-        auto_now_add=True, verbose_name="تاریخ افزودن فیلم"
+    countries = models.ManyToManyField(
+        Country,
+        related_name="films",
+        blank=False,
+        verbose_name="کشور ها"
     )
 
-    last_update_date = models.DateTimeField(
-        auto_now=True, verbose_name="تاریخ آخرین ویرایش"
-    )
+    duration = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="مدت(دقیقه)")
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ افزودن فیلم")
+
+    last_update_date = models.DateTimeField(auto_now=True, verbose_name="تاریخ آخرین ویرایش")
     is_serial = models.BooleanField(default=False, verbose_name="سریال؟")
 
     user = models.ForeignKey(
@@ -128,17 +131,21 @@ class Film(models.Model):
         Director,
         on_delete=models.PROTECT,
         related_name="films",
-        verbose_name="کارگردان",
+        verbose_name="کارگردان"
     )
 
     actors = models.ManyToManyField(
-        Actor, related_name="films",
-        blank=True, verbose_name="بازیگر ها"
+        Actor,
+        related_name="films",
+        blank=True,
+        verbose_name="بازیگر ها"
     )
 
     collections = models.ManyToManyField(
-        Collection, related_name="films",
-        blank=True, verbose_name="دسته بندی ها"
+        Collection,
+        related_name="films",
+        blank=True,
+        verbose_name="دسته بندی ها"
     )
 
     genres = models.ManyToManyField(
@@ -190,21 +197,27 @@ class Link(models.Model):
         max_length=255,
         choices=SUBTITLE_CHOICES,
         default=SUBTITLE_NO_SUB,
-        verbose_name="زیرنویس",
+        verbose_name="زیرنویس"
     )
 
     quality = models.CharField(
         max_length=255,
         choices=QUALITY_CHOICES,
         default=QUALITY_720P,
-        verbose_name="کیفیت",
+        verbose_name="کیفیت"
     )
 
     season = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)], null=True, blank=True, verbose_name="فصل"
+        validators=[MinValueValidator(1)],
+        null=True,
+        blank=True,
+        verbose_name="فصل"
     )
     episode = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)], null=True, blank=True, verbose_name="قسمت"
+        validators=[MinValueValidator(1)],
+        null=True,
+        blank=True,
+        verbose_name="قسمت"
     )
 
     created_date = models.DateTimeField(
@@ -212,7 +225,10 @@ class Link(models.Model):
     )
 
     film = models.ForeignKey(
-        Film, on_delete=models.CASCADE, related_name="links", verbose_name="فیلم"
+        Film,
+        on_delete=models.CASCADE,
+        related_name="links",
+        verbose_name="فیلم"
     )
 
     def __str__(self):
@@ -248,7 +264,7 @@ class Comment(models.Model):
         max_length=1,
         choices=STATUS_CHOICES,
         default=STATUS_PENDING,
-        verbose_name="وضعیت تایید",
+        verbose_name="وضعیت تایید"
     )
 
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ")
@@ -264,7 +280,7 @@ class Comment(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="comments",
-        verbose_name="کاربر",
+        verbose_name="کاربر"
     )
 
     def __str__(self):
