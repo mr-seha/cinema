@@ -118,7 +118,10 @@ class Film(models.Model):
     is_serial = models.BooleanField(default=False, verbose_name="سریال؟")
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="کاربر"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="films",
+        verbose_name="کاربر"
     )
 
     director = models.ForeignKey(
@@ -243,11 +246,17 @@ class Comment(models.Model):
 
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ")
 
-    film = models.ForeignKey(Film, on_delete=models.CASCADE, verbose_name="فیلم مربوطه")
+    film = models.ForeignKey(
+        Film,
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="فیلم مربوطه"
+    )
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        related_name="comments",
         verbose_name="کاربر",
     )
 
