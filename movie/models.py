@@ -283,6 +283,14 @@ class Comment(models.Model):
         verbose_name="کاربر"
     )
 
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name="والد"
+    )
+
     def __str__(self):
         max_text_length = 25
         if len(self.text) < max_text_length:

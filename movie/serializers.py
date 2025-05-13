@@ -37,7 +37,7 @@ class CommentSerializer(serializers.ModelSerializer):
     # TODO: Make film field immutable on comment editing section
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'text', 'rating', 'like_count',
+        fields = ['id', 'parent', 'user', 'text', 'rating', 'like_count',
                   'dislike_count', 'status', 'created_date', 'film']
 
         read_only_fields = ['user', 'like_count', 'dislike_count']
@@ -50,18 +50,28 @@ class CommentSerializer(serializers.ModelSerializer):
 class CommentNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'text', 'rating', 'like_count', 'dislike_count', 'status', 'created_date']
-
+        fields = ['id', 'parent', 'user', 'text', 'rating', 'like_count', 'dislike_count', 'status', 'created_date']
         read_only_fields = ['status', 'like_count', 'dislike_count', 'user']
 
     def create(self, validated_data):
         film_id = self.context.get('film_id')
+
         if not Film.objects.filter(id=film_id).exists():
             raise serializers.ValidationError({'film': 'فیلمی با این شناسه یافت نشد'})
+
+        parent = validated_data["parent"]
+        if parent and parent not in Film.objects.get(id=film_id).comments.all():
+            raise serializers.ValidationError(
+                {"parent": ["نظری که به آن پاسخ داده اید در این فیلم وجود ندارد."]}
+            )
 
         validated_data['film_id'] = film_id
         validated_data['user_id'] = self.context.get('user_id')
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop("parent")  # Disable admin access to change comment parent
+        return super().update(instance, validated_data)
 
 
 class LinkSerializer(serializers.ModelSerializer):
