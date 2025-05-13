@@ -76,9 +76,9 @@ class TestRetrieveActor:
         response = api_client.get(actor_detail_url(actor.id))
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['id'] == actor.id
-        assert response.data['full_name'] == actor.full_name
-        assert response.data['full_name_en'] == actor.full_name_en
+        assert response.data["id"] == actor.id
+        assert response.data["full_name"] == actor.full_name
+        assert response.data["full_name_en"] == actor.full_name_en
 
 
 @pytest.mark.django_db

@@ -23,4 +23,4 @@ class TestRetrieveLink:
         authenticate(is_staff=True)
         response = api_client.get(LINKS_URL + f"{link.id}/")
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['id'] == link.id
+        assert response.data["id"] == link.id

@@ -8,15 +8,15 @@ class FilmFilter(filters.FilterSet):
     class Meta:
         model = Film
         fields = {
-            'status': ['exact'],
-            'is_serial': ['exact'],
-            'year': ['gte', 'lt'],
-            'imdb_rating': ['gte', 'lt'],
-            'genres': ['exact'],
-            'collections': ['exact'],
-            'countries': ['exact'],
-            'actors': ['exact'],
-            'director': ['exact'],
+            "status": ["exact"],
+            "is_serial": ["exact"],
+            "year": ["gte", "lt"],
+            "imdb_rating": ["gte", "lt"],
+            "genres": ["exact"],
+            "collections": ["exact"],
+            "countries": ["exact"],
+            "actors": ["exact"],
+            "director": ["exact"],
         }
 
 
@@ -28,8 +28,8 @@ class LinkFilter(filters.FilterSet):
     class Meta:
         model = Link
         fields = {
-            'language': ['iexact'],
-            'size': ['gte', 'lt'],
+            "language": ["iexact"],
+            "size": ["gte", "lt"],
         }
 
 
@@ -41,5 +41,5 @@ class CommentFilter(filters.FilterSet):
     class Meta:
         model = Comment
         fields = {
-            'status': ['exact'],
+            "status": ["exact"],
         }

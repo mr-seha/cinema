@@ -4,16 +4,16 @@ from solo.models import SingletonModel
 
 
 class User(AbstractUser):
-    email = models.EmailField(unique=True, max_length=255, verbose_name='ایمیل')
+    email = models.EmailField(unique=True, max_length=255, verbose_name="ایمیل")
 
     def __str__(self):
-        display_name = ''
+        display_name = ""
         if self.first_name:
             display_name += self.first_name
 
         if self.last_name:
             if display_name:
-                display_name += ' '
+                display_name += " "
             display_name += self.last_name
 
         if not display_name:
@@ -22,7 +22,7 @@ class User(AbstractUser):
 
 
 class SiteConfiguration(SingletonModel):
-    site_title = models.CharField(max_length=255, default='دانلود فیلم', verbose_name="عنوان سایت")
+    site_title = models.CharField(max_length=255, default="دانلود فیلم", verbose_name="عنوان سایت")
 
     def __str__(self):
         return "تنظیمات سایت"

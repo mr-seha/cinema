@@ -65,8 +65,8 @@ class TestRetrieveCollection:
         response = api_client.get(COLLECTIONS_URL + f"{collection.id}/")
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['id'] == collection.id
-        assert response.data['title'] == collection.title
+        assert response.data["id"] == collection.id
+        assert response.data["title"] == collection.title
 
 
 @pytest.mark.django_db

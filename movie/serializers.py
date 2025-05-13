@@ -6,58 +6,58 @@ from .models import Actor, Collection, Comment, Country, Director, Film, Genre, 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ['id', 'title']
+        fields = ["id", "title"]
 
 
 class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection
-        fields = ['id', 'title']
+        fields = ["id", "title"]
 
 
 class DirectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Director
-        fields = ['id', 'full_name', 'full_name_en', 'picture']
+        fields = ["id", "full_name", "full_name_en", "picture"]
 
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
-        fields = ['id', 'full_name', 'full_name_en', 'picture']
+        fields = ["id", "full_name", "full_name_en", "picture"]
 
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = ['id', 'title']
+        fields = ["id", "title"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
     # TODO: Make film field immutable on comment editing section
     class Meta:
         model = Comment
-        fields = ['id', 'parent', 'user', 'text', 'rating', 'like_count',
-                  'dislike_count', 'status', 'created_date', 'film']
+        fields = ["id", "parent", "user", "text", "rating", "like_count",
+                  "dislike_count", "status", "created_date", "film"]
 
-        read_only_fields = ['user', 'like_count', 'dislike_count']
+        read_only_fields = ["user", "like_count", "dislike_count"]
 
     def create(self, validated_data):
-        validated_data['user_id'] = self.context.get('user_id')
+        validated_data["user_id"] = self.context.get("user_id")
         return super().create(validated_data)
 
 
 class CommentNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'parent', 'user', 'text', 'rating', 'like_count', 'dislike_count', 'status', 'created_date']
-        read_only_fields = ['status', 'like_count', 'dislike_count', 'user']
+        fields = ["id", "parent", "user", "text", "rating", "like_count", "dislike_count", "status", "created_date"]
+        read_only_fields = ["status", "like_count", "dislike_count", "user"]
 
     def create(self, validated_data):
-        film_id = self.context.get('film_id')
+        film_id = self.context.get("film_id")
 
         if not Film.objects.filter(id=film_id).exists():
-            raise serializers.ValidationError({'film': 'فیلمی با این شناسه یافت نشد'})
+            raise serializers.ValidationError({"film": "فیلمی با این شناسه یافت نشد"})
 
         parent = validated_data["parent"]
         if parent and parent not in Film.objects.get(id=film_id).comments.all():
@@ -65,26 +65,26 @@ class CommentNestedSerializer(serializers.ModelSerializer):
                 {"parent": ["نظری که به آن پاسخ داده اید در این فیلم وجود ندارد."]}
             )
 
-        validated_data['film_id'] = film_id
-        validated_data['user_id'] = self.context.get('user_id')
+        validated_data["film_id"] = film_id
+        validated_data["user_id"] = self.context.get("user_id")
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        validated_data.pop("parent")  # Disable admin access to change comment parent
+        validated_data.pop("parent", None)  # Disable admin access to change comment parent
         return super().update(instance, validated_data)
 
 
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        fields = ['id', 'url', 'size', 'language', 'subtitle', 'quality',
-                  'season', 'episode', 'film', 'created_date']
+        fields = ["id", "url", "size", "language", "subtitle", "quality",
+                  "season", "episode", "film", "created_date"]
 
 
 class LinkNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        fields = ['id', 'url', 'size', 'language', 'subtitle', 'quality', 'season', 'episode']
+        fields = ["id", "url", "size", "language", "subtitle", "quality", "season", "episode"]
 
 
 class FilmSerializer(serializers.ModelSerializer):
@@ -97,10 +97,10 @@ class FilmSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
-        fields = ['id', 'title', 'title_en', 'thumbnail', 'year', 'description', 'is_serial',
-                  'duration', 'imdb_rating', 'imdb_link', 'status', 'user', 'created_date',
-                  'last_update_date', 'visit_count', 'director', 'genres', 'collections',
-                  'actors', 'countries']
+        fields = ["id", "title", "title_en", "thumbnail", "year", "description", "is_serial",
+                  "duration", "imdb_rating", "imdb_link", "status", "user", "created_date",
+                  "last_update_date", "visit_count", "director", "genres", "collections",
+                  "actors", "countries"]
 
 
 class FilmSavingSerializer(serializers.ModelSerializer):
@@ -120,9 +120,9 @@ class FilmSavingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
-        fields = ['id', 'title', 'title_en', 'thumbnail', 'year', 'description', 'is_serial',
-                  'duration', 'imdb_rating', 'imdb_link', 'status', 'user', 'created_date',
-                  'last_update_date', 'director', 'genres', 'collections', 'actors', 'countries']
+        fields = ["id", "title", "title_en", "thumbnail", "year", "description", "is_serial",
+                  "duration", "imdb_rating", "imdb_link", "status", "user", "created_date",
+                  "last_update_date", "director", "genres", "collections", "actors", "countries"]
 
     def validate_countries(self, countries):
         if not countries:
@@ -141,5 +141,5 @@ class FilmSavingSerializer(serializers.ModelSerializer):
         return genres
 
     def create(self, validated_data):
-        validated_data['user'] = self.context['user']
+        validated_data["user"] = self.context["user"]
         return super().create(validated_data)
