@@ -1,2 +1,2 @@
 # cinema
-Full featured RESTful API for a movie download site with django rest framework.
+A full-featured RESTful API for a movie download site, built with Django REST Framework.
