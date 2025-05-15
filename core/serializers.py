@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from .models import SiteConfiguration
 from .validators import password_validator
 
 
@@ -38,3 +39,15 @@ class UserBriefSerializer(serializers.ModelSerializer):
             user.save()
 
         return user
+
+
+class SiteConfigurationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteConfiguration
+        fields = [
+            "site_title",
+            "telegram_channel",
+            "instagram_page",
+            "phone_number",
+            "copyright_text"
+        ]

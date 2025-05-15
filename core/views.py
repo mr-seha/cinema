@@ -4,10 +4,16 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from .models import SiteConfiguration
 from .permissions import IsSuperUser
-from .serializers import UserSerializer, UserBriefSerializer
+from .serializers import (
+    SiteConfigurationSerializer,
+    UserSerializer,
+    UserBriefSerializer,
+)
 
 
 class UserViewSet(ModelViewSet):
@@ -27,3 +33,17 @@ class UserViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response("اطلاعات کاربری با موفقیت تغییر یافت.", status=status.HTTP_200_OK)
+
+
+class SiteConfigurationView(APIView):
+    def get(self, request):
+        config = SiteConfiguration.objects.first()
+        serializer = SiteConfigurationSerializer(config)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        config = SiteConfiguration.objects.first()
+        serializer = SiteConfigurationSerializer(config, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
