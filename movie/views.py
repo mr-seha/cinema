@@ -81,10 +81,21 @@ class FilmViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset = Film.objects.select_related("director") \
-            .prefetch_related("actors", "collections", "genres", "countries")
-        if self.request.user.is_staff:
-            return queryset
-        return queryset.filter(status=Film.STATUS_PUBLISHED)
+            .prefetch_related(
+            "actors",
+            "collections",
+            "genres",
+            "countries"
+        )
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(status=Film.STATUS_PUBLISHED)
+
+        subtitle = self.request.query_params.get("subtitle")
+        if subtitle:
+            films = Link.objects.filter(subtitle=subtitle).values("film").distinct()
+            queryset = queryset.filter(id__in=films)
+
+        return queryset
 
     def get_serializer_context(self):
         return {"user": self.request.user}

@@ -70,7 +70,7 @@ class CommentNestedSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        validated_data.pop("parent", None)  # Disable admin access to change comment parent
+        validated_data.pop("parent", None)  # Prevent admins from changing a comment's parent.
         return super().update(instance, validated_data)
 
 
