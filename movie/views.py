@@ -2,6 +2,7 @@ from django.db.models import ExpressionWrapper, F, IntegerField, Q
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from django_visit_count.utils import is_new_visit
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -57,6 +58,25 @@ class CollectionDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name='subtitle',
+            type=str,
+            required=False,
+            description=f"""
+            \n- `{Link.SUBTITLE_NO_SUB}` - زیرنویس ندارد
+            \n- `{Link.SUBTITLE_PERSIAN_HARD_SUB}` - زیرنویس فارسی چسبیده
+            \n- `{Link.SUBTITLE_ENGLISH_HARD_SUB}` - زیرنویس انگلیسی چسبیده
+            """,
+            enum=[
+                Link.SUBTITLE_NO_SUB,
+                Link.SUBTITLE_PERSIAN_HARD_SUB,
+                Link.SUBTITLE_ENGLISH_HARD_SUB
+            ],
+        ),
+    ],
+)
 class FilmViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = FilmFilter
