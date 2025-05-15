@@ -4,7 +4,11 @@ from solo.models import SingletonModel
 
 
 class User(AbstractUser):
-    email = models.EmailField(unique=True, max_length=255, verbose_name="ایمیل")
+    email = models.EmailField(
+        unique=True,
+        max_length=255,
+        verbose_name="ایمیل"
+    )
 
     def __str__(self):
         display_name = ""

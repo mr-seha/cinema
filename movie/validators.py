@@ -27,4 +27,5 @@ from rest_framework.exceptions import ValidationError
 def film_thumbnail_size_validator(image):
     max_size = 800 * 1024
     if image.size > max_size:
-        raise ValidationError(f"اندازه تصویر از {max_size} کیلوبایت بیشتر می باشد")
+        error_msg = f"اندازه تصویر از {max_size} کیلوبایت بیشتر می باشد"
+        raise ValidationError(error_msg)

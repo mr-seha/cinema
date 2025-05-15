@@ -8,8 +8,20 @@ from .validators import password_validator
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["id", "last_login", "is_superuser", "username", "first_name", "last_name", "is_staff", "is_active",
-                  "date_joined", "email", "groups", "user_permissions"]
+        fields = [
+            "id",
+            "last_login",
+            "is_superuser",
+            "username",
+            "first_name",
+            "last_name",
+            "is_staff",
+            "is_active",
+            "date_joined",
+            "email",
+            "groups",
+            "user_permissions",
+        ]
 
         read_only_fields = ["date_joined", "last_login"]
 
@@ -17,17 +29,26 @@ class UserSerializer(serializers.ModelSerializer):
 class UserBriefSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["id", "last_login", "username", "password", "first_name", "last_name", "email"]
+        fields = [
+            "id",
+            "last_login",
+            "username",
+            "password",
+            "first_name",
+            "last_name",
+            "email",
+        ]
 
         read_only_fields = ["last_login"]
 
-    password = serializers.CharField(max_length=255,
-                                     write_only=True,
-                                     allow_blank=True,
-                                     help_text="برای عدم تغییر پسورد فیلد را خالی بگذارید.",
-                                     style={"input_type": "password"},
-                                     validators=[password_validator]
-                                     )
+    password = serializers.CharField(
+        max_length=255,
+        write_only=True,
+        allow_blank=True,
+        help_text="برای عدم تغییر پسورد فیلد را خالی بگذارید.",
+        style={"input_type": "password"},
+        validators=[password_validator]
+    )
 
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
@@ -49,5 +70,5 @@ class SiteConfigurationSerializer(serializers.ModelSerializer):
             "telegram_channel",
             "instagram_page",
             "phone_number",
-            "copyright_text"
+            "copyright_text",
         ]

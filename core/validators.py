@@ -8,7 +8,9 @@ def password_validator(password):
     character_count = digit_count = 0
 
     if len(password) < 6:
-        password_validation_errors.append("طول پسورد انتخابی بیش از حد کوتاه است.")
+        password_validation_errors.append(
+            "طول پسورد انتخابی بیش از حد کوتاه است."
+        )
 
     for ch in password:
         if ch in ascii_letters:
@@ -17,7 +19,9 @@ def password_validator(password):
             digit_count += 1
 
     if character_count == 0 or digit_count == 0:
-        password_validation_errors.append("پسورد انتخابی باید ترکیبی از حروف و اعداد باشد.")
+        password_validation_errors.append(
+            "پسورد انتخابی باید ترکیبی از حروف و اعداد باشد."
+        )
 
     if password_validation_errors:
         raise ValidationError(password_validation_errors)

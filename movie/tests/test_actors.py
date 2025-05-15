@@ -94,7 +94,12 @@ class TestDeleteActor:
         response = delete_actor(actor.id)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_delete_actor_success(self, api_client, authenticate, delete_actor):
+    def test_delete_actor_success(
+            self,
+            api_client,
+            authenticate,
+            delete_actor
+    ):
         authenticate(is_staff=True)
         actor = baker.make(Actor)
         response = delete_actor(actor.id)

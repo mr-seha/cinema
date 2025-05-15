@@ -14,7 +14,11 @@ router.register("genres", views.GenreViewSet)
 
 router.register("films", views.FilmViewSet, basename="films")
 films_router = routers.NestedSimpleRouter(router, r"films", lookup="film")
-films_router.register(r"comments", views.CommentNestedViewSet, basename="film-comments")
+films_router.register(
+    r"comments",
+    views.CommentNestedViewSet,
+    basename="film-comments"
+)
 films_router.register(r"links", views.LinkNestedViewSet, basename="film-links")
 
 urlpatterns = [

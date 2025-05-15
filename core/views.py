@@ -21,8 +21,13 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsSuperUser]
 
-    @action(detail=False, methods=["GET", "PUT"], permission_classes=[IsAuthenticated],
-            serializer_class=UserBriefSerializer, name="اطلاعات کاربری")
+    @action(
+        detail=False,
+        methods=["GET", "PUT"],
+        permission_classes=[IsAuthenticated],
+        serializer_class=UserBriefSerializer,
+        name="اطلاعات کاربری",
+    )
     def me(self, request):
         user = get_object_or_404(get_user_model(), pk=request.user.pk)
         if request.method == "GET":
@@ -32,7 +37,10 @@ class UserViewSet(ModelViewSet):
             serializer = UserBriefSerializer(user, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response("اطلاعات کاربری با موفقیت تغییر یافت.", status=status.HTTP_200_OK)
+            return Response(
+                data="اطلاعات کاربری با موفقیت تغییر یافت.",
+                status=status.HTTP_200_OK,
+            )
 
 
 class SiteConfigurationView(APIView):

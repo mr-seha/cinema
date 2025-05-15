@@ -1,6 +1,15 @@
 from rest_framework import serializers
 
-from .models import Actor, Collection, Comment, Country, Director, Film, Genre, Link
+from .models import (
+    Actor,
+    Collection,
+    Comment,
+    Country,
+    Director,
+    Film,
+    Genre,
+    Link,
+)
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -50,27 +59,40 @@ class CommentSerializer(serializers.ModelSerializer):
 class CommentNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ["id", "parent", "user", "text", "rating", "like_count", "dislike_count", "status", "created_date"]
+        fields = [
+            "id",
+            "parent",
+            "user",
+            "text",
+            "rating",
+            "like_count",
+            "dislike_count",
+            "status",
+            "created_date",
+        ]
         read_only_fields = ["status", "like_count", "dislike_count", "user"]
 
     def create(self, validated_data):
         film_id = self.context.get("film_id")
 
         if not Film.objects.filter(id=film_id).exists():
-            raise serializers.ValidationError({"film": "فیلمی با این شناسه یافت نشد"})
+            raise serializers.ValidationError(
+                {"film": "فیلمی با این شناسه یافت نشد"}
+            )
 
         parent = validated_data["parent"]
-        if parent and parent not in Film.objects.get(id=film_id).comments.all():
-            raise serializers.ValidationError(
-                {"parent": ["نظری که به آن پاسخ داده اید در این فیلم وجود ندارد."]}
-            )
+        comments = Film.objects.get(id=film_id).comments.all()
+        error_msg = "نظری که به آن پاسخ داده اید در این فیلم وجود ندارد."
+        if parent and parent not in comments:
+            raise serializers.ValidationError({"parent": [error_msg]})
 
         validated_data["film_id"] = film_id
         validated_data["user_id"] = self.context.get("user_id")
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        validated_data.pop("parent", None)  # Prevent admins from changing a comment's parent.
+        # Prevent admins from changing a comment's parent.
+        validated_data.pop("parent", None)
         return super().update(instance, validated_data)
 
 
@@ -84,7 +106,16 @@ class LinkSerializer(serializers.ModelSerializer):
 class LinkNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        fields = ["id", "url", "size", "language", "subtitle", "quality", "season", "episode"]
+        fields = [
+            "id",
+            "url",
+            "size",
+            "language",
+            "subtitle",
+            "quality",
+            "season",
+            "episode",
+        ]
 
 
 class FilmSerializer(serializers.ModelSerializer):
@@ -97,10 +128,28 @@ class FilmSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
-        fields = ["id", "title", "title_en", "thumbnail", "year", "description", "is_serial",
-                  "duration", "imdb_rating", "imdb_link", "status", "user", "created_date",
-                  "last_update_date", "visit_count", "director", "genres", "collections",
-                  "actors", "countries"]
+        fields = [
+            "id",
+            "title",
+            "title_en",
+            "thumbnail",
+            "year",
+            "description",
+            "is_serial",
+            "duration",
+            "imdb_rating",
+            "imdb_link",
+            "status",
+            "user",
+            "created_date",
+            "last_update_date",
+            "visit_count",
+            "director",
+            "genres",
+            "collections",
+            "actors",
+            "countries",
+        ]
 
 
 class FilmSavingSerializer(serializers.ModelSerializer):
@@ -110,19 +159,45 @@ class FilmSavingSerializer(serializers.ModelSerializer):
         queryset=Genre.objects.all(), many=True, label="ژانر ها")
 
     collections = serializers.PrimaryKeyRelatedField(
-        queryset=Collection.objects.all(), many=True, required=False, label="دسته بندی ها")
+        queryset=Collection.objects.all(),
+        many=True,
+        required=False,
+        label="دسته بندی ها"
+    )
 
     actors = serializers.PrimaryKeyRelatedField(
-        queryset=Actor.objects.all(), many=True, required=False, label="بازیگران")
+        queryset=Actor.objects.all(),
+        many=True,
+        required=False,
+        label="بازیگران"
+    )
 
     countries = serializers.PrimaryKeyRelatedField(
         queryset=Country.objects.all(), many=True, label="کشور ها")
 
     class Meta:
         model = Film
-        fields = ["id", "title", "title_en", "thumbnail", "year", "description", "is_serial",
-                  "duration", "imdb_rating", "imdb_link", "status", "user", "created_date",
-                  "last_update_date", "director", "genres", "collections", "actors", "countries"]
+        fields = [
+            "id",
+            "title",
+            "title_en",
+            "thumbnail",
+            "year",
+            "description",
+            "is_serial",
+            "duration",
+            "imdb_rating",
+            "imdb_link",
+            "status",
+            "user",
+            "created_date",
+            "last_update_date",
+            "director",
+            "genres",
+            "collections",
+            "actors",
+            "countries",
+        ]
 
     def validate_countries(self, countries):
         if not countries:

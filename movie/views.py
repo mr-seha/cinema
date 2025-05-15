@@ -6,7 +6,10 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView
+)
 from rest_framework.permissions import IsAdminUser, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,7 +17,16 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from . import serializers
 from .filters import CommentFilter, FilmFilter, LinkFilter
-from .models import Actor, Collection, Comment, Film, Link, Director, Country, Genre
+from .models import (
+    Actor,
+    Collection,
+    Comment,
+    Country,
+    Director,
+    Film,
+    Genre,
+    Link,
+)
 from .permissions import IsAdminOrReadOnly, IsAdminOrAuthenticatedOrReadOnly
 
 
@@ -24,7 +36,7 @@ from .permissions import IsAdminOrReadOnly, IsAdminOrAuthenticatedOrReadOnly
             name='search',
             description='A search term',
             required=False,
-            type=str
+            type=str,
         )
     ]
 )
@@ -57,7 +69,10 @@ class CollectionDetail(APIView):
 
     def put(self, request, id):
         collection = get_object_or_404(Collection, id=id)
-        serializer = serializers.CollectionSerializer(collection, data=request.data)
+        serializer = serializers.CollectionSerializer(
+            collection,
+            data=request.data
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_200_OK)
@@ -82,7 +97,7 @@ class CollectionDetail(APIView):
             enum=[
                 Link.SUBTITLE_NO_SUB,
                 Link.SUBTITLE_PERSIAN_HARD_SUB,
-                Link.SUBTITLE_ENGLISH_HARD_SUB
+                Link.SUBTITLE_ENGLISH_HARD_SUB,
             ],
         ),
     ],
@@ -90,7 +105,12 @@ class CollectionDetail(APIView):
 class FilmViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = FilmFilter
-    ordering_fields = ["created_date", "last_update_date", "imdb_rating", "visit_count"]
+    ordering_fields = [
+        "created_date",
+        "last_update_date",
+        "imdb_rating",
+        "visit_count",
+    ]
     ordering = ["-last_update_date"]
     search_fields = ["title", "title_en"]
     permission_classes = [IsAdminOrReadOnly]
@@ -115,14 +135,15 @@ class FilmViewSet(ModelViewSet):
             "actors",
             "collections",
             "genres",
-            "countries"
+            "countries",
         )
         if not self.request.user.is_staff:
             queryset = queryset.filter(status=Film.STATUS_PUBLISHED)
 
         subtitle = self.request.query_params.get("subtitle")
         if subtitle:
-            films = Link.objects.filter(subtitle=subtitle).values("film").distinct()
+            films = Link.objects.filter(subtitle=subtitle) \
+                .values("film").distinct()
             queryset = queryset.filter(id__in=films)
 
         return queryset
@@ -174,7 +195,7 @@ class CommentViewSet(ModelViewSet):
 
 class CommentNestedViewSet(ModelViewSet):
     serializer_class = serializers.CommentNestedSerializer
-    filter_backends = [OrderingFilter, ]
+    filter_backends = [OrderingFilter]
     ordering_fields = ["created_date", "like"]
     permission_classes = [IsAdminOrAuthenticatedOrReadOnly]
 
@@ -197,7 +218,9 @@ class CommentNestedViewSet(ModelViewSet):
         elif user.is_staff:
             return queryset.exclude(status=Comment.STATUS_REJECTED)
         else:
-            return queryset.filter(Q(status=Comment.STATUS_APPROVED) | Q(user_id=user.id))
+            return queryset.filter(
+                Q(status=Comment.STATUS_APPROVED) | Q(user_id=user.id)
+            )
 
     def get_serializer_context(self):
         return {"film_id": self.kwargs.get("film_pk"),

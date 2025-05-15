@@ -30,10 +30,20 @@ class Collection(models.Model):
 
 
 class Director(models.Model):
-    full_name = models.CharField(max_length=255, verbose_name="نام و نام خانوادگی")
-    full_name_en = models.CharField(max_length=255, verbose_name="نام و نام خانوادگی انگلیسی")
-    picture = models.ImageField(upload_to="movie/images",
-                                null=True, blank=True, verbose_name="تصویر")
+    full_name = models.CharField(
+        max_length=255,
+        verbose_name="نام و نام خانوادگی"
+    )
+    full_name_en = models.CharField(
+        max_length=255,
+        verbose_name="نام و نام خانوادگی انگلیسی"
+    )
+    picture = models.ImageField(
+        upload_to="movie/images",
+        null=True,
+        blank=True,
+        verbose_name="تصویر"
+    )
 
     def __str__(self):
         return self.full_name
@@ -44,8 +54,14 @@ class Director(models.Model):
 
 
 class Actor(models.Model):
-    full_name = models.CharField(max_length=255, verbose_name="نام و نام خانوادگی")
-    full_name_en = models.CharField(max_length=255, verbose_name="نام و نام خانوادگی انگلیسی")
+    full_name = models.CharField(
+        max_length=255,
+        verbose_name="نام و نام خانوادگی"
+    )
+    full_name_en = models.CharField(
+        max_length=255,
+        verbose_name="نام و نام خانوادگی انگلیسی"
+    )
     picture = models.ImageField(
         upload_to="movie/images",
         null=True,
@@ -84,7 +100,10 @@ class Film(models.Model):
     title_en = models.CharField(max_length=255, verbose_name="عنوان انگلیسی")
 
     year = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1700), MaxValueValidator(datetime.now().year)],
+        validators=[
+            MinValueValidator(1700),
+            MaxValueValidator(datetime.now().year)
+        ],
         verbose_name="سال تولید(میلادی)",
     )
     description = models.TextField(verbose_name="توضیح")
@@ -114,10 +133,20 @@ class Film(models.Model):
         verbose_name="کشور ها"
     )
 
-    duration = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="مدت(دقیقه)")
-    created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ افزودن فیلم")
+    duration = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="مدت(دقیقه)"
+    )
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاریخ افزودن فیلم"
+    )
 
-    last_update_date = models.DateTimeField(auto_now=True, verbose_name="تاریخ آخرین ویرایش")
+    last_update_date = models.DateTimeField(
+        auto_now=True,
+        verbose_name="تاریخ آخرین ویرایش"
+    )
     is_serial = models.BooleanField(default=False, verbose_name="سریال؟")
 
     user = models.ForeignKey(
@@ -155,7 +184,10 @@ class Film(models.Model):
         verbose_name="ژانر ها"
     )
 
-    visit_count = models.PositiveIntegerField(default=0, verbose_name="تعداد بازدید")
+    visit_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="تعداد بازدید"
+    )
 
     def __str__(self):
         return f"{self.title}({self.year})"
@@ -192,7 +224,11 @@ class Link(models.Model):
 
     url = models.URLField(max_length=255, verbose_name="آدرس")
     size = models.PositiveSmallIntegerField(verbose_name="اندازه(مگابایت)")
-    language = models.CharField(max_length=255, default="فارسی", verbose_name="زبان")
+    language = models.CharField(
+        max_length=255,
+        default="فارسی",
+        verbose_name="زبان"
+    )
     subtitle = models.CharField(
         max_length=255,
         choices=SUBTITLE_CHOICES,
@@ -255,7 +291,10 @@ class Comment(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(5)],
         verbose_name="امتیاز به فیلم",
     )
-    like_count = models.PositiveSmallIntegerField(default=0, verbose_name="لایک ها")
+    like_count = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="لایک ها"
+    )
     dislike_count = models.PositiveSmallIntegerField(
         default=0, verbose_name="دیسلایک ها"
     )
@@ -267,7 +306,10 @@ class Comment(models.Model):
         verbose_name="وضعیت تایید"
     )
 
-    created_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ")
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاریخ"
+    )
 
     film = models.ForeignKey(
         Film,

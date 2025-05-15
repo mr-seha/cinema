@@ -7,7 +7,16 @@ from django.utils.http import urlencode
 from jalali_date import datetime2jalali
 from jalali_date.admin import ModelAdminJalaliMixin
 
-from .models import Actor, Collection, Comment, Country, Director, Film, Genre, Link
+from .models import (
+    Actor,
+    Collection,
+    Comment,
+    Country,
+    Director,
+    Film,
+    Genre,
+    Link,
+)
 
 
 class LinkInline(admin.StackedInline):
@@ -65,13 +74,28 @@ class LinkSizeFilter(admin.SimpleListFilter):
 @admin.register(Film)
 class FilmAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
     list_display = [
-        "title", "year", "is_serial", "duration_minutes", "visit_count", "imdb_rating_link", "status",
+        "title",
+        "year",
+        "is_serial",
+        "duration_minutes",
+        "visit_count",
+        "imdb_rating_link",
+        "status",
         "created_date_jalali",
-        "get_user"]
+        "get_user",
+    ]
     list_editable = ["status"]
     readonly_fields = ["user", "visit_count"]
     search_fields = ["title", "title_en"]
-    list_filter = ["status", "is_serial", "genres", IMDBRatingFilter, "created_date", "collections", "countries"]
+    list_filter = [
+        "status",
+        "is_serial",
+        "genres",
+        IMDBRatingFilter,
+        "created_date",
+        "collections",
+        "countries",
+    ]
     autocomplete_fields = ["collections", "director", "actors", "countries"]
     inlines = [LinkInline]
     actions = ["make_published"]
@@ -90,11 +114,16 @@ class FilmAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
 
     @admin.display(description="امتیاز imdb", ordering="imdb_rating")
     def imdb_rating_link(self, film: Film):
-        return format_html("<a target='_blank' href='{}'>{}</a>", film.imdb_link, film.imdb_rating)
+        return format_html(
+            "<a target='_blank' href='{}'>{}</a>",
+            film.imdb_link,
+            film.imdb_rating
+        )
 
     @admin.display(description="نویسنده", ordering="user")
     def get_user(self, film: Film):
-        url = reverse("admin:core_user_changelist") + "?" + urlencode({"id": film.user.id})
+        url = reverse("admin:core_user_changelist") \
+              + "?" + urlencode({"id": film.user.id})
         return format_html("<a href='{}'>{}</a>", url, film.user)
 
     @admin.action(description="منتشر کردن")
@@ -151,11 +180,15 @@ class CollectionAdmin(admin.ModelAdmin):
     list_per_page = settings.ADMIN_LIST_PER_PAGE
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(count_of_films=Count("films"))
+        return super().get_queryset(request).annotate(
+            count_of_films=Count("films")
+        )
 
     @admin.display(description="تعداد فیلم ها")
     def count_of_films(self, collection: Collection):
-        url = reverse("admin:movie_film_changelist") + "?" + urlencode({"collections": collection.id})
+        url = reverse("admin:movie_film_changelist") \
+              + "?" + urlencode({"collections": collection.id})
+
         count = collection.count_of_films
         if count == 0:
             return 0
@@ -174,7 +207,6 @@ class GenreAdmin(admin.ModelAdmin):
               urlencode({"genres": genre.id})
 
         count = Film.objects.filter(genres=genre.id).count()
-
         if count == 0:
             return 0
 
@@ -183,10 +215,25 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Link)
 class LinkAdmin(admin.ModelAdmin):
-    list_display = ["title", "get_size", "season", "episode", "language", "subtitle", "get_film", "download_link"]
+    list_display = [
+        "title",
+        "get_size",
+        "season",
+        "episode",
+        "language",
+        "subtitle",
+        "get_film",
+        "download_link",
+    ]
     search_fields = ["film__title", "film__title_en"]
     autocomplete_fields = ["film"]
-    list_filter = ["subtitle", "language", "quality", "created_date", LinkSizeFilter]
+    list_filter = [
+        "subtitle",
+        "language",
+        "quality",
+        "created_date",
+        LinkSizeFilter,
+    ]
     list_select_related = ["film"]
     list_per_page = settings.ADMIN_LIST_PER_PAGE
 
@@ -207,13 +254,21 @@ class LinkAdmin(admin.ModelAdmin):
 
     @admin.display(description="فیلم مربوطه")
     def get_film(self, link: Link):
-        url = reverse("admin:movie_film_changelist") + "?" + urlencode({"id": link.film.id})
+        url = reverse("admin:movie_film_changelist") \
+              + "?" + urlencode({"id": link.film.id})
         return format_html("<a href='{}'>مشاهده</a>", url)
 
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ["get_text", "get_user", "status", "rating", "get_film", "created_date"]
+    list_display = [
+        "get_text",
+        "get_user",
+        "status",
+        "rating",
+        "get_film",
+        "created_date",
+    ]
     list_display_links = ["get_text"]
     list_editable = ["status"]
     readonly_fields = ["user"]
@@ -226,7 +281,8 @@ class CommentAdmin(admin.ModelAdmin):
 
     @admin.display(description="کاربر", ordering="user")
     def get_user(self, comment: Comment):
-        url = reverse("admin:core_user_changelist") + "?" + urlencode({"id": comment.user.id})
+        url = reverse("admin:core_user_changelist") \
+              + "?" + urlencode({"id": comment.user.id})
         return format_html("<a href='{}'>{}</a>", url, comment.user)
 
     @admin.display(description="متن نظر")
@@ -237,7 +293,8 @@ class CommentAdmin(admin.ModelAdmin):
 
     @admin.display(description="فیلم مربوطه")
     def get_film(self, comment: Comment):
-        url = reverse("admin:movie_film_changelist") + "?" + urlencode({"id": comment.film.id})
+        url = reverse("admin:movie_film_changelist") \
+              + "?" + urlencode({"id": comment.film.id})
         return format_html("<a href='{}'>{}</a>", url, comment.film.title)
 
     @admin.action(description="رد کردن")
