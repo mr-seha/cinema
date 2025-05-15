@@ -18,6 +18,16 @@ from .models import Actor, Collection, Comment, Film, Link, Director, Country, G
 from .permissions import IsAdminOrReadOnly, IsAdminOrAuthenticatedOrReadOnly
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name='search',
+            description='A search term',
+            required=False,
+            type=str
+        )
+    ]
+)
 @api_view(["GET", "POST"])
 @permission_classes([IsAdminOrReadOnly])
 def collection_list(request):
