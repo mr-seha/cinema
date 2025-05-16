@@ -86,7 +86,7 @@ class CollectionDetail(APIView):
 @extend_schema(
     parameters=[
         OpenApiParameter(
-            name='subtitle',
+            name="subtitle",
             type=str,
             required=False,
             description=f"""
@@ -136,6 +136,7 @@ class FilmViewSet(ModelViewSet):
             "collections",
             "genres",
             "countries",
+            "links",
         )
         if not self.request.user.is_staff:
             queryset = queryset.filter(status=Film.STATUS_PUBLISHED)
