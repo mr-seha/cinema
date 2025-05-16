@@ -51,7 +51,7 @@ This project provides a robust backend system for a movie download website, offe
    In a new terminal window, run:
 
    ```bash
-   docker compose exec backend sh -c "python manage.py migrate""
+   docker compose exec backend sh -c "python manage.py migrate"
    ```
 
 4. **Create a superuser (optional):**
