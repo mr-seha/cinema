@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from movie.permissions import IsAdminOrReadOnly
 from .models import SiteConfiguration
 from .permissions import IsSuperUser
 from .serializers import (
@@ -44,6 +45,8 @@ class UserViewSet(ModelViewSet):
 
 
 class SiteConfigurationView(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request):
         config = SiteConfiguration.objects.first()
         serializer = SiteConfigurationSerializer(config)
