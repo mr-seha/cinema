@@ -44,7 +44,7 @@ class UserViewSet(ModelViewSet):
         serializer_class=UserBriefSerializer,
         name="اطلاعات کاربری",
     )
-    def me(self, request):
+    def profile(self, request):
         user = get_object_or_404(get_user_model(), pk=request.user.pk)
         if request.method == "GET":
             serializer = UserBriefSerializer(user)
