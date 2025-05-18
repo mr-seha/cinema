@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
 from .models import SiteConfiguration
-from .validators import password_validator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,16 +39,14 @@ class UserBriefSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
         ]
-
         read_only_fields = ["last_login"]
 
     password = serializers.CharField(
         max_length=255,
         write_only=True,
-        allow_blank=True,
+        required=False,
         help_text="برای عدم تغییر پسورد فیلد را خالی بگذارید.",
         style={"input_type": "password"},
-        validators=[password_validator],
         label="رمز عبور"
     )
 
@@ -57,8 +54,12 @@ class UserBriefSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password", None)
 
         user = super().update(instance, validated_data)
-
         if password:
+            try:
+                validate_password(password, user=user)
+            except DjangoValidationError as errors:
+                raise serializers.ValidationError({"password": list(errors)})
+
             user.set_password(password)
             user.save()
 

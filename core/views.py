@@ -39,7 +39,7 @@ class UserViewSet(ModelViewSet):
 
     @action(
         detail=False,
-        methods=["GET", "PUT"],
+        methods=["GET", "PATCH", "PUT"],
         permission_classes=[IsAuthenticated],
         serializer_class=UserBriefSerializer,
         name="اطلاعات کاربری",
@@ -49,8 +49,13 @@ class UserViewSet(ModelViewSet):
         if request.method == "GET":
             serializer = UserBriefSerializer(user)
             return Response(serializer.data)
-        elif request.method == "PUT":
-            serializer = UserBriefSerializer(user, data=request.data)
+        elif request.method == "PATCH" or request.method == "PUT":
+            serializer = UserBriefSerializer(
+                user,
+                data=request.data,
+                partial=True
+            )
+
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(
