@@ -43,7 +43,6 @@ class CountrySerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    # TODO: Make film field immutable on comment editing section
     class Meta:
         model = Comment
         fields = ["id", "parent", "user", "text", "rating", "like_count",
@@ -54,6 +53,10 @@ class CommentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data["user_id"] = self.context.get("user_id")
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop("film", None)
+        return super().update(instance, validated_data)
 
 
 class CommentNestedSerializer(serializers.ModelSerializer):
