@@ -77,7 +77,7 @@ class CommentNestedSerializer(serializers.ModelSerializer):
 
         if not Film.objects.filter(id=film_id).exists():
             raise serializers.ValidationError(
-                {"film": "فیلمی با این شناسه یافت نشد"}
+                {"film": ["فیلمی با این شناسه یافت نشد"]}
             )
 
         parent = validated_data["parent"]
