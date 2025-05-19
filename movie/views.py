@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from django_visit_count.utils import is_new_visit
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework import status
+from rest_framework import status, mixins
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import (
@@ -13,7 +13,11 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAdminUser, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import (
+    ModelViewSet,
+    ReadOnlyModelViewSet,
+    GenericViewSet
+)
 
 from . import serializers
 from .filters import CommentFilter, FilmFilter, LinkFilter
@@ -176,7 +180,13 @@ class LinkNestedViewSet(ReadOnlyModelViewSet):
         return Link.objects.filter(film_id=self.kwargs["film_pk"])
 
 
-class CommentViewSet(ModelViewSet):
+class CommentViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet
+):
     serializer_class = serializers.CommentSerializer
     queryset = Comment.objects.annotate(
         like=ExpressionWrapper(
