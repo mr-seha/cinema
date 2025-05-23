@@ -15,6 +15,7 @@ from .models import (
     Director,
     Film,
     Genre,
+    Language,
     Link,
 )
 
@@ -317,12 +318,29 @@ class CountryAdmin(admin.ModelAdmin):
 
     @admin.display(description="تعداد فیلم ها")
     def films_count(self, country: Country):
+        count = Film.objects.filter(countries=country.id).count()
+        if count == 0:
+            return 0
+
         url = reverse("admin:movie_film_changelist") + "?" + \
               urlencode({"countries": country.id})
 
-        count = Film.objects.filter(countries=country.id).count()
+        return format_html("<a href='{}'>{}</a>", url, count)
 
+
+@admin.register(Language)
+class LanguageAdmin(admin.ModelAdmin):
+    list_display = ["title", "films_count"]
+    search_fields = ["title__istartswith"]
+    list_per_page = settings.ADMIN_LIST_PER_PAGE
+
+    @admin.display(description="تعداد فیلم ها")
+    def films_count(self, language: Language):
+        count = language.films.count()
         if count == 0:
             return 0
+
+        url = reverse("admin:movie_film_changelist") + "?" + \
+              urlencode({"languages": language.id})
 
         return format_html("<a href='{}'>{}</a>", url, count)
