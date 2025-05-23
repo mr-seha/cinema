@@ -88,6 +88,17 @@ class Country(models.Model):
         verbose_name_plural = "کشور"
 
 
+class Language(models.Model):
+    title = models.CharField(max_length=255, verbose_name="نام")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "زبان"
+        verbose_name_plural = "زبان"
+
+
 class Film(models.Model):
     STATUS_DRAFT = "D"
     STATUS_PUBLISHED = "P"
