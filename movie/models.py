@@ -144,6 +144,13 @@ class Film(models.Model):
         verbose_name="کشور ها"
     )
 
+    languages = models.ManyToManyField(
+        Language,
+        related_name="films",
+        blank=False,
+        verbose_name="زبان ها"
+    )
+
     duration = models.PositiveSmallIntegerField(
         null=True,
         blank=True,
