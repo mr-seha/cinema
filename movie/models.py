@@ -242,11 +242,14 @@ class Link(models.Model):
 
     url = models.URLField(max_length=255, verbose_name="آدرس")
     size = models.PositiveSmallIntegerField(verbose_name="اندازه(مگابایت)")
-    language = models.CharField(
-        max_length=255,
-        default="فارسی",
-        verbose_name="زبان"
+
+    languages = models.ManyToManyField(
+        Language,
+        related_name="links",
+        blank=False,
+        verbose_name="زبان ها"
     )
+
     subtitle = models.CharField(
         max_length=255,
         choices=SUBTITLE_CHOICES,

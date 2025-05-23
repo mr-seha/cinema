@@ -28,7 +28,7 @@ class LinkFilter(filters.FilterSet):
     class Meta:
         model = Link
         fields = {
-            "language": ["iexact"],
+            "languages": ["exact"],
             "size": ["gte", "lt"],
         }
 

@@ -220,7 +220,6 @@ class LinkAdmin(admin.ModelAdmin):
         "get_size",
         "season",
         "episode",
-        "language",
         "subtitle",
         "get_film",
         "download_link",
@@ -229,7 +228,7 @@ class LinkAdmin(admin.ModelAdmin):
     autocomplete_fields = ["film"]
     list_filter = [
         "subtitle",
-        "language",
+        "languages",
         "quality",
         "created_date",
         LinkSizeFilter,
