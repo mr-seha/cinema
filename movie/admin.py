@@ -148,8 +148,8 @@ class ActorAdmin(admin.ModelAdmin):
         if count == 0:
             return 0
 
-        url = reverse("admin:movie_film_changelist") + "?" + \
-              urlencode({"actors": actor.id})
+        url = (reverse("admin:movie_film_changelist") + "?" +
+               urlencode({"actors": actor.id}))
 
         return format_html("<a href='{}'>{}</a>", url, count)
 
@@ -166,8 +166,8 @@ class DirectorAdmin(admin.ModelAdmin):
         if count == 0:
             return 0
 
-        url = reverse("admin:movie_film_changelist") + "?" + \
-              urlencode({"director_id": director.id})
+        url = (reverse("admin:movie_film_changelist") + "?" +
+               urlencode({"director_id": director.id}))
 
         return format_html("<a href='{}'>{}</a>", url, count)
 
@@ -320,8 +320,8 @@ class CountryAdmin(admin.ModelAdmin):
         if count == 0:
             return 0
 
-        url = reverse("admin:movie_film_changelist") + "?" + \
-              urlencode({"countries": country.id})
+        url = (reverse("admin:movie_film_changelist") + "?" +
+               urlencode({"countries": country.id}))
 
         return format_html("<a href='{}'>{}</a>", url, count)
 
@@ -338,7 +338,7 @@ class LanguageAdmin(admin.ModelAdmin):
         if count == 0:
             return 0
 
-        url = reverse("admin:movie_film_changelist") + "?" + \
-              urlencode({"languages": language.id})
+        url = (reverse("admin:movie_film_changelist") + "?" +
+               urlencode({"languages": language.id}))
 
         return format_html("<a href='{}'>{}</a>", url, count)
