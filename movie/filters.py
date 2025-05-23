@@ -15,6 +15,7 @@ class FilmFilter(filters.FilterSet):
             "genres": ["exact"],
             "collections": ["exact"],
             "countries": ["exact"],
+            "languages": ["exact"],
             "actors": ["exact"],
             "director": ["exact"],
         }
