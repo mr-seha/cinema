@@ -15,7 +15,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import (
     ModelViewSet,
-    ReadOnlyModelViewSet,
     GenericViewSet
 )
 
@@ -171,13 +170,6 @@ class LinkDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.LinkSerializer
     lookup_field = "id"
     permission_classes = [IsAdminUser]
-
-
-class LinkNestedViewSet(ReadOnlyModelViewSet):
-    serializer_class = serializers.LinkNestedSerializer
-
-    def get_queryset(self):
-        return Link.objects.filter(film_id=self.kwargs["film_pk"])
 
 
 class CommentViewSet(
