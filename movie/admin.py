@@ -144,13 +144,12 @@ class ActorAdmin(admin.ModelAdmin):
 
     @admin.display(description="تعداد فیلم ها")
     def films_count(self, actor: Actor):
-        url = reverse("admin:movie_film_changelist") + "?" + \
-              urlencode({"actors": actor.id})
-
         count = Film.objects.filter(actors=actor.id).count()
-
         if count == 0:
             return 0
+
+        url = reverse("admin:movie_film_changelist") + "?" + \
+              urlencode({"actors": actor.id})
 
         return format_html("<a href='{}'>{}</a>", url, count)
 
@@ -163,13 +162,12 @@ class DirectorAdmin(admin.ModelAdmin):
 
     @admin.display(description="تعداد فیلم ها")
     def films_count(self, director: Director):
-        url = reverse("admin:movie_film_changelist") + "?" + \
-              urlencode({"director_id": director.id})
-
         count = Film.objects.filter(director_id=director.id).count()
-
         if count == 0:
             return 0
+
+        url = reverse("admin:movie_film_changelist") + "?" + \
+              urlencode({"director_id": director.id})
 
         return format_html("<a href='{}'>{}</a>", url, count)
 
