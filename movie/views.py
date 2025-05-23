@@ -215,13 +215,13 @@ class CommentNestedViewSet(ModelViewSet):
         film_id = self.kwargs.get("film_pk")
         user = self.request.user
 
-        queryset = Comment.objects \
-            .filter(film_id=film_id) \
-            .annotate(
-            like=ExpressionWrapper(
-                F("like_count") - F("dislike_count"),
-                output_field=IntegerField()
-            )
+        net_likes = ExpressionWrapper(
+            F("like_count") - F("dislike_count"),
+            output_field=IntegerField()
+        )
+
+        queryset = Comment.objects.filter(film_id=film_id).annotate(
+            like=net_likes
         )
 
         if not user:
