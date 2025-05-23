@@ -144,7 +144,7 @@ class Film(models.Model):
         verbose_name="کشور ها"
     )
 
-    languages = models.ManyToManyField(
+    original_languages = models.ManyToManyField(
         Language,
         related_name="films",
         blank=False,

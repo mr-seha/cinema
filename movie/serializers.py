@@ -143,7 +143,7 @@ class FilmSerializer(serializers.ModelSerializer):
     collections = CollectionSerializer(many=True)
     actors = ActorSerializer(many=True)
     countries = CountrySerializer(many=True)
-    languages = LanguageSerializer(many=True)
+    original_languages = LanguageSerializer(many=True)
     links = LinkNestedSerializer(many=True)
 
     class Meta:
@@ -169,7 +169,7 @@ class FilmSerializer(serializers.ModelSerializer):
             "collections",
             "actors",
             "countries",
-            "languages",
+            "original_languages",
             "links",
         ]
 
@@ -198,7 +198,7 @@ class FilmSavingSerializer(serializers.ModelSerializer):
         queryset=Country.objects.all(), many=True, label="کشور ها"
     )
 
-    languages = serializers.PrimaryKeyRelatedField(
+    original_languages = serializers.PrimaryKeyRelatedField(
         queryset=Language.objects.all(), many=True, label="زبان ها"
     )
 
@@ -224,6 +224,7 @@ class FilmSavingSerializer(serializers.ModelSerializer):
             "collections",
             "actors",
             "countries",
+            "original_languages",
         ]
 
     def validate_countries(self, countries):
