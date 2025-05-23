@@ -9,6 +9,7 @@ from .models import (
     Film,
     Genre,
     Link,
+    Language,
 )
 
 
@@ -39,6 +40,12 @@ class ActorSerializer(serializers.ModelSerializer):
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
+        fields = ["id", "title"]
+
+
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
         fields = ["id", "title"]
 
 
@@ -100,20 +107,28 @@ class CommentNestedSerializer(serializers.ModelSerializer):
 
 
 class LinkSerializer(serializers.ModelSerializer):
+    languages = serializers.PrimaryKeyRelatedField(
+        queryset=Language.objects.all(),
+        many=True,
+        label="زبان ها"
+    )
+
     class Meta:
         model = Link
-        fields = ["id", "url", "size", "language", "subtitle", "quality",
+        fields = ["id", "url", "size", "languages", "subtitle", "quality",
                   "season", "episode", "film", "created_date"]
 
 
 class LinkNestedSerializer(serializers.ModelSerializer):
+    languages = LanguageSerializer(many=True)
+
     class Meta:
         model = Link
         fields = [
             "id",
             "url",
             "size",
-            "language",
+            "languages",
             "subtitle",
             "quality",
             "season",
