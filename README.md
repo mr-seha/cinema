@@ -1,6 +1,6 @@
 # 🎬 API for a Movie Download Website
 
-A comprehensive RESTful API for a movie download website, developed using Django REST Framework.
+A comprehensive RESTful API for a movie download website, developed using Django & Django REST Framework.
 
 ## Overview
 
@@ -11,17 +11,17 @@ This project provides a robust backend system for a movie download website, offe
 * Download link management
 * Administrative controls for content management
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 * **Python**
 * **Django**
 * **Django REST Framework**
 * **Docker & Docker Compose**
 * **Celery & Redis** to manage background tasks
-* **pytest** for testing
+* **Pytest** for testing
 * **Locust** for performance testing
 * **Silk** for live profiling
-* **flake8** for code linting
+* **Flake8** for code linting
 
 
 ## Getting Started
@@ -51,27 +51,30 @@ This project provides a robust backend system for a movie download website, offe
    In a new terminal window, run:
 
    ```bash
-   docker compose exec backend sh -c "python manage.py migrate"
+   docker compose exec backend python manage.py migrate
    ```
 
 4. **Create a superuser (optional):**
 
    ```bash
-   docker compose exec backend sh -c "python manage.py createsuperuser"
+   docker compose exec backend python manage.py createsuperuser
    ```
 
 5. **Access the application:**
 
    * API Root: [http://localhost:8000/api/](http://localhost:8000/api/)
-   * API Documentation: [http://localhost:8000/api/schema/swagger-ui/](http://localhost:8000/api/schema/swagger-ui/)
+   * API Documentation(Swagger): [http://localhost:8000/api/schema/swagger-ui/](http://localhost:8000/api/schema/swagger-ui/)
+   * API Documentation(Redoc): [http://localhost:8000/api/schema/redoc/](http://localhost:8000/api/schema/redoc/)
    * Admin Panel: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+   * Live profiling: [http://localhost:8000/silk/](http://localhost:8000/silk/)
+
 
 ## Running Tests
 
 To execute the test suite:
 
 ```bash
-docker compose exec backend sh -c pytest
+docker compose exec backend pytest
 ```
 
 
