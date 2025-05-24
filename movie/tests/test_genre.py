@@ -31,6 +31,14 @@ class TestPublicGenreAPI:
 
 @pytest.mark.django_db
 class TestPrivateGenreAPI:
+    def test_user_is_not_admin(self, api_client, authenticate):
+        authenticate(is_staff=False)
+
+        payload = {"title": "test"}
+        response = api_client.post(GENRES_URL, payload)
+
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
     def test_create_genre_empty_title(self, api_client, authenticate):
         authenticate(is_staff=True)
 
