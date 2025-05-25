@@ -90,7 +90,7 @@ class CommentNestedSerializer(serializers.ModelSerializer):
                 {"film": ["فیلمی با این شناسه یافت نشد"]}
             )
 
-        parent = validated_data["parent"]
+        parent = validated_data.get("parent")
         comments = Film.objects.get(id=film_id).comments.all()
         error_msg = "نظری که به آن پاسخ داده اید در این فیلم وجود ندارد."
         if parent and parent not in comments:

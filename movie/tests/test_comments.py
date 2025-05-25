@@ -4,6 +4,7 @@ from model_bakery import baker
 from rest_framework import status
 
 from movie.models import Comment, Film
+from movie.views import CommentNestedViewSet
 
 
 def film_url(film_id):
@@ -92,12 +93,14 @@ class TestPublicFilmCommentsAPI:
         )
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    # TODO: Fix missing serializer context in this test
-    @pytest.mark.skip
-    def test_add_comment(self, api_client, authenticate):
+    def test_add_comment(self, api_client, authenticate, mocker):
         authenticate(is_staff=False)
-
         film = baker.make(Film)
+
+        mocker.patch.object(
+            CommentNestedViewSet,
+            'get_serializer_context',
+            return_value={"film_id": film.id, "user_id": 1})
 
         payload = {"text": "Awesome", "rating": 5}
         response = api_client.post(film_url(film.id) + "comments/", payload)
