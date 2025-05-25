@@ -230,33 +230,30 @@ class CommentNestedViewSet(ModelViewSet):
                 "user_id": self.request.user.id}
 
 
-class DirectorViewSet(ModelViewSet):
+class BaseAttrViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    permission_classes = [IsAdminOrReadOnly]
+
+
+class DirectorViewSet(BaseAttrViewSet):
     queryset = Director.objects.all()
     serializer_class = serializers.DirectorSerializer
-    filter_backends = [SearchFilter]
     search_fields = ["full_name", "full_name_en"]
-    permission_classes = [IsAdminOrReadOnly]
 
 
-class ActorViewSet(ModelViewSet):
+class ActorViewSet(BaseAttrViewSet):
     queryset = Actor.objects.all()
     serializer_class = serializers.ActorSerializer
-    filter_backends = [SearchFilter]
     search_fields = ["full_name", "full_name_en"]
-    permission_classes = [IsAdminOrReadOnly]
 
 
-class CountryViewSet(ModelViewSet):
+class CountryViewSet(BaseAttrViewSet):
     queryset = Country.objects.all()
     serializer_class = serializers.CountrySerializer
-    filter_backends = [SearchFilter]
     search_fields = ["title"]
-    permission_classes = [IsAdminOrReadOnly]
 
 
-class GenreViewSet(ModelViewSet):
+class GenreViewSet(BaseAttrViewSet):
     queryset = Genre.objects.all()
     serializer_class = serializers.GenreSerializer
-    filter_backends = [SearchFilter]
     search_fields = ["title"]
-    permission_classes = [IsAdminOrReadOnly]
