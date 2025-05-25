@@ -30,6 +30,7 @@ pytest-django = "*"
 pytest-watch = "*"
 model-bakery = "*"
 flake8 = "*"
+pytest-mock = "*"
 
 [requires]
 python_version = "3.11"
