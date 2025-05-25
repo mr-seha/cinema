@@ -74,7 +74,11 @@ This project provides a robust backend system for a movie download website, offe
 To execute the test suite:
 
 ```bash
-docker compose exec backend pytest
+docker compose run --rm backend pytest
+```
+Alternatively, use pytest-watch for continuous testing
+```bash
+docker compose run --rm backend ptw
 ```
 
 
