@@ -6,7 +6,7 @@ A comprehensive RESTful API for a movie download website, developed using Django
 
 This project provides a robust backend system for a movie download website, offering functionalities such as:
 
-* User authentication and authorization
+* User Registration, login, and profile management
 * Movie listing and detailed views
 * Download link management
 * Administrative controls for content management
@@ -26,48 +26,84 @@ This project provides a robust backend system for a movie download website, offe
 
 ## Getting Started
 
-### Prerequisites
-
-* Docker
-* Docker Compose
-
-### Installation
-
-1. **Clone the repository:**
+**Clone the repository:**
 
    ```bash
    git clone https://github.com/mr-seha/cinema.git
    cd cinema
    ```
 
-2. **Build and start the containers:**
+### Run via pipenv
+
+1. **Install pipenv:**
+
+   ```bash
+   pip install --user pipenv
+   ```
+
+2. **Activate the virtual environment:**
+
+   ```bash
+   pipenv shell
+   ```
+3. **Install dependencies:**
+
+   In the same terminal, run:
+   ```bash
+   pipenv install --dev --skip-lock
+   ```
+4. **Apply migrations:**
+
+   ```bash
+   python manage.py migrate
+   ```
+
+5. **Run server:**
+
+   Run the development server:
+   ```bash
+   python manage.py runserver
+   ```
+
+   Or run with gunicorn:
+   ```bash
+   gunicorn cinema.wsgi
+   ```
+6. **Create a superuser (optional):**
+
+   ```bash
+   python manage.py createsuperuser
+   ```
+      
+### Run via docker & docker compose
+
+1. **Build and start the containers:**
 
    ```bash
    docker compose up --build
    ```
-
-3. **Apply migrations:**
+   
+2. **Apply migrations:**
 
    In a new terminal window, run:
 
    ```bash
-   docker compose exec backend python manage.py migrate
+   docker compose run --rm backend python manage.py migrate
    ```
 
-4. **Create a superuser (optional):**
+3. **Create a superuser (optional):**
 
    ```bash
-   docker compose exec backend python manage.py createsuperuser
+   docker compose run --rm backend python manage.py createsuperuser
    ```
-
-5. **Access the application:**
+   
+**Access the application:**
 
    * API Root: [http://localhost:8000/api/](http://localhost:8000/api/)
    * API Documentation(Swagger): [http://localhost:8000/api/schema/swagger-ui/](http://localhost:8000/api/schema/swagger-ui/)
    * API Documentation(Redoc): [http://localhost:8000/api/schema/redoc/](http://localhost:8000/api/schema/redoc/)
    * Admin Panel: [http://localhost:8000/admin/](http://localhost:8000/admin/)
    * Live profiling: [http://localhost:8000/silk/](http://localhost:8000/silk/)
-
 
 ## Running Tests
 
@@ -80,7 +116,6 @@ Alternatively, use pytest-watch for continuous testing
 ```bash
 docker compose run --rm backend ptw
 ```
-
 
 ## Author
 
