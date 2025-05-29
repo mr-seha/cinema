@@ -141,3 +141,21 @@ class TestPublicFilmCommentsAPI:
 
         comment.refresh_from_db()
         assert comment.dislike_count == 1
+
+    def test_not_show_rejected_comments_to_non_admins(self, api_client):
+        film = baker.make(Film)
+        comment = baker.make(
+            Comment,
+            film=film,
+            status=Comment.STATUS_APPROVED
+        )
+        baker.make(
+            Comment,
+            film=film,
+            status=Comment.STATUS_REJECTED
+        )
+
+        response = api_client.get(film_url(film.id) + "comments/")
+
+        assert len(response.data["results"]) == 1
+        assert response.data["results"][0]["text"] == comment.text
