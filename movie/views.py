@@ -28,6 +28,7 @@ from .models import (
     Director,
     Film,
     Genre,
+    Language,
     Link,
 )
 from .permissions import IsAdminOrReadOnly, IsAdminOrAuthenticatedOrReadOnly
@@ -250,6 +251,12 @@ class ActorViewSet(BaseAttrViewSet):
 class CountryViewSet(BaseAttrViewSet):
     queryset = Country.objects.all()
     serializer_class = serializers.CountrySerializer
+    search_fields = ["title"]
+
+
+class LanguageViewSet(BaseAttrViewSet):
+    queryset = Language.objects.all()
+    serializer_class = serializers.LanguageSerializer
     search_fields = ["title"]
 
 

@@ -10,6 +10,7 @@ router.register("comments", views.CommentViewSet)
 router.register("actors", views.ActorViewSet)
 router.register("directors", views.DirectorViewSet)
 router.register("countries", views.CountryViewSet)
+router.register("languages", views.LanguageViewSet)
 router.register("genres", views.GenreViewSet)
 
 router.register("films", views.FilmViewSet, basename="films")
