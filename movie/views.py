@@ -4,13 +4,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django_visit_count.utils import is_new_visit
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status, mixins
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView
 )
-from rest_framework.permissions import IsAdminUser, SAFE_METHODS
+from rest_framework.permissions import AllowAny, IsAdminUser, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import (
@@ -203,8 +203,41 @@ class CommentNestedViewSet(ModelViewSet):
     ordering_fields = ["created_date", "like"]
     permission_classes = [IsAdminOrAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
+    @action(detail=True, methods=["POST"], permission_classes=[AllowAny])
+    def like(self, request, **kwargs):
+        if request.method == "POST":
+            return self._handle_vote(
+                "like_count",
+                "has_liked",
+                error_msg="شما قبلا این نظر را پسند کرده اید"
+            )
 
+    @action(detail=True, methods=["POST"], permission_classes=[AllowAny])
+    def dislike(self, request, **kwargs):
+        if request.method == "POST":
+            return self._handle_vote(
+                "dislike_count",
+                "has_disliked",
+                "شما قبلا این نظر را دیسلایک کرده اید"
+            )
+
+    def _handle_vote(self, field_name, key, error_msg):
+        obj = self.get_object()
+
+        session_key = f"{key}_comment_{obj.id}"
+        if not self.request.session.get(session_key):
+            self.request.session[session_key] = True
+            setattr(obj, field_name, getattr(obj, field_name) + 1)
+            obj.save()
+
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": error_msg},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    def get_queryset(self):
         film_id = self.kwargs.get("film_pk")
         user = self.request.user
 
