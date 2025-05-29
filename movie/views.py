@@ -203,6 +203,7 @@ class CommentNestedViewSet(ModelViewSet):
     ordering_fields = ["created_date", "like"]
     permission_classes = [IsAdminOrAuthenticatedOrReadOnly]
 
+    @extend_schema(request=None)  # Indicates that the request has no body
     @action(detail=True, methods=["POST"], permission_classes=[AllowAny])
     def like(self, request, **kwargs):
         if request.method == "POST":
@@ -212,6 +213,7 @@ class CommentNestedViewSet(ModelViewSet):
                 error_msg="شما قبلا این نظر را پسند کرده اید"
             )
 
+    @extend_schema(request=None)  # Indicates that the request has no body
     @action(detail=True, methods=["POST"], permission_classes=[AllowAny])
     def dislike(self, request, **kwargs):
         if request.method == "POST":
