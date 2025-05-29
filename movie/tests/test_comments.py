@@ -105,3 +105,39 @@ class TestPublicFilmCommentsAPI:
         payload = {"text": "Awesome", "rating": 5}
         response = api_client.post(film_url(film.id) + "comments/", payload)
         assert response.status_code == status.HTTP_201_CREATED
+
+    def test_like_comment(self, api_client):
+        film = baker.make(Film)
+        comment = baker.make(
+            Comment,
+            film=film,
+            status=Comment.STATUS_APPROVED
+        )
+
+        url = film_url(film.id) + f"comments/{comment.id}/like/"
+        response1 = api_client.post(url)
+        response2 = api_client.post(url)
+
+        assert response1.status_code == status.HTTP_200_OK
+        assert response2.status_code == status.HTTP_400_BAD_REQUEST
+
+        comment.refresh_from_db()
+        assert comment.like_count == 1
+
+    def test_dislike_comment(self, api_client):
+        film = baker.make(Film)
+        comment = baker.make(
+            Comment,
+            film=film,
+            status=Comment.STATUS_APPROVED
+        )
+
+        url = film_url(film.id) + f"comments/{comment.id}/dislike/"
+        response1 = api_client.post(url)
+        response2 = api_client.post(url)
+
+        assert response1.status_code == status.HTTP_200_OK
+        assert response2.status_code == status.HTTP_400_BAD_REQUEST
+
+        comment.refresh_from_db()
+        assert comment.dislike_count == 1
