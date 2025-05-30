@@ -7,3 +7,4 @@ exclude =
     common.py
     dev.py
     prod.py
+    cinema/__init__.py
