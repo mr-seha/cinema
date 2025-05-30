@@ -269,7 +269,6 @@ class CommentNestedViewSet(ModelViewSet):
 class BaseAttrViewSet(ModelViewSet):
     filter_backends = [SearchFilter]
     permission_classes = [IsAdminOrReadOnly]
-    pagination_class = None
 
 
 class DirectorViewSet(BaseAttrViewSet):
