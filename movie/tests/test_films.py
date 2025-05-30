@@ -59,3 +59,28 @@ class TestPrivateFilmAPI:
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["title"] == payload["title"]
+
+    def test_create_film_missing_required_fields(
+            self,
+            api_client,
+            authenticate,
+            sample_film_data,
+            monkeypatch):
+        authenticate(is_staff=True)
+
+        user = baker.make(get_user_model(), is_staff=True)
+        monkeypatch.setattr(
+            FilmViewSet,
+            "get_serializer_context",
+            value=lambda _self: {"user": user},
+        )
+
+        payload = sample_film_data()
+
+        for key in payload.keys():
+            missing_field_payload = payload.copy()
+            missing_field_payload.pop(key)
+
+            response = api_client.post(FILMS_URL, missing_field_payload)
+            assert response.status_code == status.HTTP_400_BAD_REQUEST
+            assert models.Film.objects.count() == 0
