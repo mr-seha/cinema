@@ -10,21 +10,38 @@ from movie.views import FilmViewSet
 FILMS_URL = reverse("movie:films-list")
 
 
+@pytest.fixture
+def sample_film_data():
+    def get_sample_film_data(**kwargs):
+        director = baker.make(models.Director)
+        genre = baker.make(models.Genre)
+        country = baker.make(models.Country)
+        return {
+            "title": "گریه ای در شب: افسانه‌ لا یورونا",
+            "title_en": "A Cry in the Night: The Legend of La Llorona",
+            "year": 2021,
+            "description": "description",
+            "imdb_rating": 4.0,
+            "imdb_link": "https://www.imdb.com/title/tt9001550",
+            "director": kwargs.get("director_id", director.id),
+            "genres": [kwargs.get("genre_id", genre.id)],
+            "countries": [kwargs.get("country_id", country.id)],
+        }
+
+    return get_sample_film_data
+
+
 @pytest.mark.django_db
 class TestPrivateFilmAPI:
     def test_create_film_successful(
             self,
             api_client,
             authenticate,
+            sample_film_data,
             monkeypatch):
         authenticate(is_staff=True)
 
         user = baker.make(get_user_model(), is_staff=True)
-        director = baker.make(models.Director)
-        genre = baker.make(models.Genre)
-        country = baker.make(models.Country)
-        language = baker.make(models.Language)
-
         monkeypatch.setattr(
             FilmViewSet,
             "get_serializer_context",
@@ -37,19 +54,8 @@ class TestPrivateFilmAPI:
         #     return_value={"user": user}
         # )
 
-        payload = {
-            "title": "گریه ای در شب: افسانه‌ لا یورونا",
-            "title_en": "A Cry in the Night: The Legend of La Llorona",
-            "year": 2021,
-            "description": "description",
-            "imdb_rating": 4.0,
-            "imdb_link": "https://www.imdb.com/title/tt9001550",
-            "genres": [genre.id],
-            "director": director.id,
-            "countries": [country.id],
-            "original_languages": [language.id],
-        }
-
+        payload = sample_film_data()
         response = api_client.post(FILMS_URL, payload)
+
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["title"] == payload["title"]
