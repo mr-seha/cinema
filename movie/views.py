@@ -114,6 +114,7 @@ class FilmViewSet(ModelViewSet):
         "last_update_date",
         "imdb_rating",
         "visit_count",
+        "comment_count"
     ]
     ordering = ["-last_update_date"]
     search_fields = ["title", "title_en"]
