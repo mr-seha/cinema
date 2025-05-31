@@ -1,4 +1,4 @@
-from django.db.models import ExpressionWrapper, F, IntegerField, Q
+from django.db.models import Count, ExpressionWrapper, F, IntegerField, Q
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from django_visit_count.utils import is_new_visit
@@ -141,6 +141,11 @@ class FilmViewSet(ModelViewSet):
             "genres",
             "countries",
             "links",
+        ).annotate(
+            comment_count=Count(
+                "comments",
+                filter=Q(comments__status=Comment.STATUS_APPROVED)
+            ),
         )
         if not self.request.user.is_staff:
             queryset = queryset.filter(status=Film.STATUS_PUBLISHED)

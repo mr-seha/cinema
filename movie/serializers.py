@@ -145,6 +145,7 @@ class FilmSerializer(serializers.ModelSerializer):
     countries = CountrySerializer(many=True)
     original_languages = LanguageSerializer(many=True)
     links = LinkNestedSerializer(many=True)
+    comment_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Film
@@ -164,6 +165,7 @@ class FilmSerializer(serializers.ModelSerializer):
             "created_date",
             "last_update_date",
             "visit_count",
+            "comment_count",
             "director",
             "genres",
             "collections",
