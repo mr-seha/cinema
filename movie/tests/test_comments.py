@@ -60,15 +60,6 @@ class TestPublicFilmCommentsAPI:
         response = api_client.post(film_url(film.id) + "comments/", payload)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_create_comment_no_rating(self, api_client, authenticate):
-        authenticate(is_staff=False)
-
-        film = baker.make(Film)
-
-        payload = {"text": "Awesome"}
-        response = api_client.post(film_url(film.id) + "comments/", payload)
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-
     def test_delete_comment_forbidden(self, api_client, authenticate):
         film = baker.make(Film)
         comment = baker.make(Comment, film=film)

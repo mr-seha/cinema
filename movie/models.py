@@ -310,6 +310,8 @@ class Comment(models.Model):
     text = models.TextField(verbose_name="نظر")
     rating = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
+        null=True,
+        blank=True,
         verbose_name="امتیاز به فیلم",
     )
     like_count = models.PositiveSmallIntegerField(
