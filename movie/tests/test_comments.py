@@ -31,21 +31,20 @@ class TestPrivateFilmCommentsAPI:
 
         authenticate(is_staff=True)
 
-        payload = {"text": "Updated comment!", "rating": 4}
+        payload = {"text": "Updated comment!"}
         response = api_client.patch(
             film_url(film.id) + f"comments/{comment.id}/",
             payload
         )
         assert response.status_code == status.HTTP_200_OK
         assert response.data["text"] == payload["text"]
-        assert response.data["rating"] == payload["rating"]
 
 
 @pytest.mark.django_db
 class TestPublicFilmCommentsAPI:
     def test_user_is_anonymous(self, api_client):
         film = baker.make(Film)
-        payload = {"text": "Awesome!", "rating": 5, }
+        payload = {"text": "Awesome!"}
 
         response = api_client.post(film_url(film.id) + "comments/", payload)
 
@@ -56,7 +55,7 @@ class TestPublicFilmCommentsAPI:
 
         film = baker.make(Film)
 
-        payload = {"text": "", "rating": 5}
+        payload = {"text": ""}
         response = api_client.post(film_url(film.id) + "comments/", payload)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -93,7 +92,7 @@ class TestPublicFilmCommentsAPI:
             'get_serializer_context',
             return_value={"film_id": film.id, "user_id": 1})
 
-        payload = {"text": "Awesome", "rating": 5}
+        payload = {"text": "Awesome"}
         response = api_client.post(film_url(film.id) + "comments/", payload)
         assert response.status_code == status.HTTP_201_CREATED
 
