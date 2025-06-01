@@ -1,57 +1,49 @@
+from django.conf import settings
+from django.utils.module_loading import import_string
 from rest_framework import serializers
 
-from .models import (
-    Actor,
-    Collection,
-    Comment,
-    Country,
-    Director,
-    Film,
-    Genre,
-    Link,
-    Language,
-)
+from . import models
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Genre
+        model = models.Genre
         fields = ["id", "title"]
 
 
 class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Collection
+        model = models.Collection
         fields = ["id", "title"]
 
 
 class DirectorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Director
+        model = models.Director
         fields = ["id", "full_name", "full_name_en", "picture"]
 
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Actor
+        model = models.Actor
         fields = ["id", "full_name", "full_name_en", "picture"]
 
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Country
+        model = models.Country
         fields = ["id", "title"]
 
 
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Language
+        model = models.Language
         fields = ["id", "title"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
+        model = models.Comment
         fields = ["id", "parent", "user", "text", "rating", "like_count",
                   "dislike_count", "status", "created_date", "film"]
 
@@ -66,9 +58,14 @@ class CommentSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
+UserBriefSerializer = import_string(settings.USER_BRIEF_SERIALIZER)
+
+
 class CommentNestedSerializer(serializers.ModelSerializer):
+    user = UserBriefSerializer(read_only=True)
+
     class Meta:
-        model = Comment
+        model = models.Comment
         fields = [
             "id",
             "parent",
@@ -80,18 +77,18 @@ class CommentNestedSerializer(serializers.ModelSerializer):
             "status",
             "created_date",
         ]
-        read_only_fields = ["status", "like_count", "dislike_count", "user"]
+        read_only_fields = ["status", "like_count", "dislike_count"]
 
     def create(self, validated_data):
         film_id = self.context.get("film_id")
 
-        if not Film.objects.filter(id=film_id).exists():
+        if not models.Film.objects.filter(id=film_id).exists():
             raise serializers.ValidationError(
                 {"film": ["فیلمی با این شناسه یافت نشد"]}
             )
 
         parent = validated_data.get("parent")
-        comments = Film.objects.get(id=film_id).comments.all()
+        comments = models.Film.objects.get(id=film_id).comments.all()
         error_msg = "نظری که به آن پاسخ داده اید در این فیلم وجود ندارد."
         if parent and parent not in comments:
             raise serializers.ValidationError({"parent": [error_msg]})
@@ -108,13 +105,13 @@ class CommentNestedSerializer(serializers.ModelSerializer):
 
 class LinkSerializer(serializers.ModelSerializer):
     languages = serializers.PrimaryKeyRelatedField(
-        queryset=Language.objects.all(),
+        queryset=models.Language.objects.all(),
         many=True,
         label="زبان ها"
     )
 
     class Meta:
-        model = Link
+        model = models.Link
         fields = ["id", "url", "size", "languages", "subtitle", "quality",
                   "season", "episode", "film", "created_date"]
 
@@ -123,7 +120,7 @@ class LinkNestedSerializer(serializers.ModelSerializer):
     languages = LanguageSerializer(many=True)
 
     class Meta:
-        model = Link
+        model = models.Link
         fields = [
             "id",
             "url",
@@ -148,7 +145,7 @@ class FilmSerializer(serializers.ModelSerializer):
     comment_count = serializers.IntegerField(read_only=True)
 
     class Meta:
-        model = Film
+        model = models.Film
         fields = [
             "id",
             "title",
@@ -180,32 +177,32 @@ class FilmSavingSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     genres = serializers.PrimaryKeyRelatedField(
-        queryset=Genre.objects.all(), many=True, label="ژانر ها")
+        queryset=models.Genre.objects.all(), many=True, label="ژانر ها")
 
     collections = serializers.PrimaryKeyRelatedField(
-        queryset=Collection.objects.all(),
+        queryset=models.Collection.objects.all(),
         many=True,
         required=False,
         label="دسته بندی ها"
     )
 
     actors = serializers.PrimaryKeyRelatedField(
-        queryset=Actor.objects.all(),
+        queryset=models.Actor.objects.all(),
         many=True,
         required=False,
         label="بازیگران"
     )
 
     countries = serializers.PrimaryKeyRelatedField(
-        queryset=Country.objects.all(), many=True, label="کشور ها"
+        queryset=models.Country.objects.all(), many=True, label="کشور ها"
     )
 
     original_languages = serializers.PrimaryKeyRelatedField(
-        queryset=Language.objects.all(), many=True, label="زبان ها"
+        queryset=models.Language.objects.all(), many=True, label="زبان ها"
     )
 
     class Meta:
-        model = Film
+        model = models.Film
         fields = [
             "id",
             "title",
@@ -232,7 +229,7 @@ class FilmSavingSerializer(serializers.ModelSerializer):
     def validate_countries(self, countries):
         if not countries:
             error_msg = "لطفا حداقل یک کشور برای فیلم انتخاب کنید."
-            if Country.objects.count() == 0:
+            if models.Country.objects.count() == 0:
                 error_msg += " ابتدا از بخش کشور ها یک کشور اضافه نمایید."
             raise serializers.ValidationError([error_msg])
         return countries
@@ -240,7 +237,7 @@ class FilmSavingSerializer(serializers.ModelSerializer):
     def validate_genres(self, genres):
         if not genres:
             error_msg = "لطفا حداقل یک ژانر برای فیلم انتخاب کنید."
-            if Genre.objects.count() == 0:
+            if models.Genre.objects.count() == 0:
                 error_msg += " ابتدا از بخش ژانر ها یک ژانر اضافه نمایید."
             raise serializers.ValidationError([error_msg])
         return genres

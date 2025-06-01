@@ -115,6 +115,7 @@ STATIC_ROOT = BASE_DIR / "static"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
+USER_BRIEF_SERIALIZER = 'core.serializers.UserBriefSerializer'
 
 INTERNAL_IPS = [
     '127.0.0.1',
