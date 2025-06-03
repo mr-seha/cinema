@@ -213,37 +213,56 @@ class CommentNestedViewSet(ModelViewSet):
     @action(detail=True, methods=["POST"], permission_classes=[AllowAny])
     def like(self, request, **kwargs):
         if request.method == "POST":
-            return self._handle_vote(
-                "like_count",
-                "has_liked",
-                error_msg="شما قبلا این نظر را پسند کرده اید"
-            )
+            return self._handle_vote("like")
 
     @extend_schema(request=None)  # Indicates that the request has no body
     @action(detail=True, methods=["POST"], permission_classes=[AllowAny])
     def dislike(self, request, **kwargs):
         if request.method == "POST":
-            return self._handle_vote(
-                "dislike_count",
-                "has_disliked",
-                "شما قبلا این نظر را دیسلایک کرده اید"
+            return self._handle_vote("dislike")
+
+    def _handle_vote(self, vote_type):
+        opp_vote_type = "dislike" if vote_type == "like" else "like"
+
+        comment = self.get_object()
+        vote_session_key = f"comment_{comment.id}_{vote_type}"
+        opp_vote_session_key = f"comment_{comment.id}_{opp_vote_type}"
+
+        vote_type_count = f"{vote_type}_count"
+        opp_vote_type_count = f"{opp_vote_type}_count"
+
+        if not self.request.session.get(vote_session_key):
+            self.request.session[vote_session_key] = True
+            setattr(
+                comment,
+                vote_type_count,
+                getattr(comment, vote_type_count) + 1
             )
 
-    def _handle_vote(self, field_name, key, error_msg):
-        obj = self.get_object()
+            if self.request.session.get(opp_vote_session_key):
+                del self.request.session[opp_vote_session_key]
+                setattr(
+                    comment,
+                    opp_vote_type_count,
+                    getattr(comment, opp_vote_type_count) - 1
+                )
 
-        session_key = f"{key}_comment_{obj.id}"
-        if not self.request.session.get(session_key):
-            self.request.session[session_key] = True
-            setattr(obj, field_name, getattr(obj, field_name) + 1)
-            obj.save()
-
-            return Response(status=status.HTTP_200_OK)
         else:
-            return Response(
-                {"message": error_msg},
-                status=status.HTTP_400_BAD_REQUEST
+            del self.request.session[vote_session_key]
+            setattr(
+                comment,
+                vote_type_count,
+                getattr(comment, vote_type_count) - 1
             )
+
+        comment.save()
+        return Response(
+            {
+                "like_count": comment.like_count,
+                "dislike_count": comment.dislike_count
+            },
+            status=status.HTTP_200_OK
+        )
 
     def get_queryset(self):
         film_id = self.kwargs.get("film_pk")
