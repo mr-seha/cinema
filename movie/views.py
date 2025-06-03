@@ -141,7 +141,8 @@ class FilmViewSet(ModelViewSet):
             "collections",
             "genres",
             "countries",
-            "links",
+            "original_languages",
+            "links__languages",
         ).annotate(
             comment_count=Count(
                 "comments",
@@ -164,7 +165,7 @@ class FilmViewSet(ModelViewSet):
 
 
 class LinkList(ListCreateAPIView):
-    queryset = Link.objects.all()
+    queryset = Link.objects.prefetch_related("languages")
     serializer_class = serializers.LinkSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = LinkFilter
@@ -173,7 +174,7 @@ class LinkList(ListCreateAPIView):
 
 
 class LinkDetail(RetrieveUpdateDestroyAPIView):
-    queryset = Link.objects.all()
+    queryset = Link.objects.prefetch_related("languages")
     serializer_class = serializers.LinkSerializer
     lookup_field = "id"
     permission_classes = [IsAdminUser]
@@ -275,7 +276,7 @@ class CommentNestedViewSet(ModelViewSet):
 
         queryset = Comment.objects.filter(film_id=film_id).annotate(
             like=net_likes
-        )
+        ).select_related("user")
 
         if not user:
             return queryset.filter(status=Comment.STATUS_APPROVED)
