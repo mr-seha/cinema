@@ -96,7 +96,7 @@ class TestPublicFilmCommentsAPI:
         response = api_client.post(film_url(film.id) + "comments/", payload)
         assert response.status_code == status.HTTP_201_CREATED
 
-    def test_like_comment(self, api_client):
+    def test_like_comment_without_dislike(self, api_client):
         film = baker.make(Film)
         comment = baker.make(
             Comment,
@@ -105,16 +105,18 @@ class TestPublicFilmCommentsAPI:
         )
 
         url = film_url(film.id) + f"comments/{comment.id}/like/"
-        response1 = api_client.post(url)
-        response2 = api_client.post(url)
 
-        assert response1.status_code == status.HTTP_200_OK
-        assert response2.status_code == status.HTTP_400_BAD_REQUEST
-
+        response = api_client.post(url)
         comment.refresh_from_db()
+        assert response.status_code == status.HTTP_200_OK
         assert comment.like_count == 1
 
-    def test_dislike_comment(self, api_client):
+        response = api_client.post(url)
+        comment.refresh_from_db()
+        assert response.status_code == status.HTTP_200_OK
+        assert comment.like_count == 0
+
+    def test_dislike_comment_without_like(self, api_client):
         film = baker.make(Film)
         comment = baker.make(
             Comment,
@@ -123,13 +125,35 @@ class TestPublicFilmCommentsAPI:
         )
 
         url = film_url(film.id) + f"comments/{comment.id}/dislike/"
-        response1 = api_client.post(url)
-        response2 = api_client.post(url)
 
-        assert response1.status_code == status.HTTP_200_OK
-        assert response2.status_code == status.HTTP_400_BAD_REQUEST
+        response = api_client.post(url)
+        comment.refresh_from_db()
+        assert response.status_code == status.HTTP_200_OK
+        assert comment.dislike_count == 1
+
+        response = api_client.post(url)
+        comment.refresh_from_db()
+        assert response.status_code == status.HTTP_200_OK
+        assert comment.dislike_count == 0
+
+    def test_dislike_replaces_like_vote(self, api_client):
+        film = baker.make(Film)
+        comment = baker.make(
+            Comment,
+            film=film,
+            status=Comment.STATUS_APPROVED
+        )
+
+        like_url = film_url(film.id) + f"comments/{comment.id}/like/"
+        api_client.post(like_url)
+
+        dislike_url = film_url(film.id) + f"comments/{comment.id}/dislike/"
+        response = api_client.post(dislike_url)
 
         comment.refresh_from_db()
+
+        assert response.status_code == status.HTTP_200_OK
+        assert comment.like_count == 0
         assert comment.dislike_count == 1
 
     def test_not_show_rejected_comments_to_non_admins(self, api_client):
