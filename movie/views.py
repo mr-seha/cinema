@@ -276,7 +276,7 @@ class CommentNestedViewSet(ModelViewSet):
 
         queryset = Comment.objects.filter(film_id=film_id).annotate(
             like=net_likes
-        ).select_related("user")
+        ).select_related("user").order_by("-created_date")
 
         if not user:
             return queryset.filter(status=Comment.STATUS_APPROVED)
