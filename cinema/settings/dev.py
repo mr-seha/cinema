@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-#mbo$vb9!+4s!$_f$e)sx%ddw+65^j2bslyqvkv%0$q0t6)4%r
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
-MIDDLEWARE += ['silk.middleware.SilkyMiddleware', ]
+# MIDDLEWARE += ['silk.middleware.SilkyMiddleware', ]
 INSTALLED_APPS += ['silk', 'debug_toolbar']
 
 DATABASES = {
