@@ -63,12 +63,25 @@ UserBriefSerializer = import_string(settings.USER_BRIEF_SERIALIZER)
 
 class CommentNestedSerializer(serializers.ModelSerializer):
     user = UserBriefSerializer(read_only=True)
+    replies = serializers.SerializerMethodField(
+        method_name="get_replies",
+        read_only=True
+    )
+
+    def get_replies(self, comment):
+        queryset = models.Comment.objects.filter(parent_id=comment.id)
+        return CommentNestedSerializer(
+            queryset,
+            many=True,
+            context=self.context
+        ).data
 
     class Meta:
         model = models.Comment
         fields = [
             "id",
             "parent",
+            "replies",
             "user",
             "text",
             "rating",
